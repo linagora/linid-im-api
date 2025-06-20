@@ -31,13 +31,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.linagora.linid.dmapicore.i18n.I18nService;
-import org.linagora.linid.dmapicore.plugin.authorization.AllowAllAuthorizationPlugin;
+import org.linagora.linid.dmapicore.exception.ApiException;
 import org.linagora.linid.dmapicore.plugin.authorization.AuthorizationFactory;
+import org.linagora.linid.dmapicore.plugin.authorization.AuthorizationPlugin;
+import org.linagora.linid.dmapicore.plugin.config.PluginConfigurationService;
+import org.linagora.linid.dmapicore.plugin.entity.EntityDescription;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -45,45 +48,77 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Test class: I18nController")
-public class I18nControllerTest {
+@DisplayName("Test class: MetadataController")
+class MetadataControllerTest {
 
   @Mock
-  private I18nService service;
+  private AuthorizationFactory authorizationFactory;
 
   @Mock
-  private AuthorizationFactory factory;
+  private PluginConfigurationService pluginConfigurationService;
 
   @InjectMocks
-  private I18nController controller;
+  private MetadataController metadataController;
 
-  @Test
-  @DisplayName("test getLanguages: should return valid data")
-  public void testGetLanguages() {
-    var request = Mockito.mock(HttpServletRequest.class);
+  private AuthorizationPlugin authorizationPlugin;
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());
-    Mockito.when(service.getLanguages()).thenReturn(List.of("en", "fr"));
-
-    var response = controller.getLanguages(request);
-
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-    assertEquals(List.of("en", "fr"), response.getBody());
+  @BeforeEach
+  void setUp() {
+    authorizationPlugin = Mockito.mock(AuthorizationPlugin.class);
+    Mockito.when(authorizationFactory.getAuthorizationPlugin()).thenReturn(authorizationPlugin);
   }
 
   @Test
-  @DisplayName("test getTranslationFile: should return valid data")
-  public void testGetTranslationFile() {
+  void shouldReturnRouteDescriptions() {
     var request = Mockito.mock(HttpServletRequest.class);
-    
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());
-    Mockito.when(service.getTranslations(Mockito.any())).thenReturn(Map.of("key", "value"));
+    Mockito.when(pluginConfigurationService.getRouteDescriptions()).thenReturn(List.of());
 
-    var response = controller.getTranslationFile("fr", request);
+    var response = metadataController.getRouteDescriptions(request);
 
     assertNotNull(response);
     assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-    assertEquals(Map.of("key", "value"), response.getBody());
+    assertEquals(List.of(), response.getBody());
+  }
+
+  @Test
+  void shouldReturnEntityDescriptions() {
+    var request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(pluginConfigurationService.getEntityDescriptions()).thenReturn(List.of());
+
+    var response = metadataController.getEntityDescriptions(request);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+    assertEquals(List.of(), response.getBody());
+  }
+
+  @Test
+  void shouldReturnEntityDescriptionByName() throws Exception {
+    var request = Mockito.mock(HttpServletRequest.class);
+    var entity = new EntityDescription("test", List.of());
+    Mockito.when(pluginConfigurationService.getEntityDescription(Mockito.any())).thenReturn(Optional.of(entity));
+
+    var response = metadataController.getEntityDescription("test", request);
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
+    assertEquals(entity, response.getBody());
+  }
+
+  @Test
+  void shouldReturn404WhenEntityNotFound() throws Exception {
+    var request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(pluginConfigurationService.getEntityDescription(Mockito.any())).thenReturn(Optional.empty());
+
+    ApiException exception = null;
+
+    try {
+      metadataController.getEntityDescription("test", request);
+    } catch (ApiException e) {
+      exception = e;
+    }
+
+    assertNotNull(exception);
+    assertEquals(HttpStatus.NOT_FOUND.value(), exception.getStatusCode());
   }
 }

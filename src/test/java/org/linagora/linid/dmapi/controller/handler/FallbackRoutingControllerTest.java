@@ -24,66 +24,65 @@
  * LinID Directory Manager software.
  */
 
-package org.linagora.linid.dmapi.controller;
+package org.linagora.linid.dmapi.controller.handler;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.linagora.linid.dmapicore.exception.ApiException;
+import org.linagora.linid.dmapicore.i18n.I18nMessage;
 import org.linagora.linid.dmapicore.i18n.I18nService;
-import org.linagora.linid.dmapicore.plugin.authorization.AllowAllAuthorizationPlugin;
-import org.linagora.linid.dmapicore.plugin.authorization.AuthorizationFactory;
+import org.linagora.linid.dmapicore.plugin.route.DynamicRoutingService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Test class: I18nController")
-public class I18nControllerTest {
-
+@DisplayName("Test class: FallbackRoutingController")
+public class FallbackRoutingControllerTest {
   @Mock
-  private I18nService service;
-
+  private DynamicRoutingService dynamicRoutingService;
   @Mock
-  private AuthorizationFactory factory;
+  private I18nService i18nService;
 
   @InjectMocks
-  private I18nController controller;
+  private FallbackRoutingController controller;
 
   @Test
-  @DisplayName("test getLanguages: should return valid data")
-  public void testGetLanguages() {
-    var request = Mockito.mock(HttpServletRequest.class);
+  void testHandleFallback() {
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    Mockito.when(dynamicRoutingService.route(Mockito.any())).thenReturn(ResponseEntity.ok().build());
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());
-    Mockito.when(service.getLanguages()).thenReturn(List.of("en", "fr"));
+    ResponseEntity<?> response = controller.handleFallback(request);
 
-    var response = controller.getLanguages(request);
-
+    Mockito.verify(dynamicRoutingService, Mockito.times(1)).route(request);
     assertNotNull(response);
-    assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-    assertEquals(List.of("en", "fr"), response.getBody());
+    assertEquals(200, response.getStatusCode().value());
   }
 
   @Test
-  @DisplayName("test getTranslationFile: should return valid data")
-  public void testGetTranslationFile() {
-    var request = Mockito.mock(HttpServletRequest.class);
-    
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());
-    Mockito.when(service.getTranslations(Mockito.any())).thenReturn(Map.of("key", "value"));
+  void testHandleApiException_shouldReturnStructuredResponse() {
+    var exception = new ApiException(400, I18nMessage.of("error.key", Map.of("key", "value")));
+    Mockito.when(i18nService.translate(Mockito.any())).thenReturn("Translated message");
 
-    var response = controller.getTranslationFile("fr", request);
+    ResponseEntity<Map<String, Object>> response = controller.handleApiException(exception);
 
     assertNotNull(response);
-    assertEquals(HttpStatus.OK.value(), response.getStatusCode().value());
-    assertEquals(Map.of("key", "value"), response.getBody());
+    assertEquals(400, response.getStatusCode().value());
+
+    Map<String, Object> body = response.getBody();
+    assertNotNull(body);
+    assertEquals("Translated message", body.get("error"));
+    assertEquals("error.key", body.get("errorKey"));
+    assertEquals(Map.of("key", "value"), body.get("errorContext"));
+    assertEquals(400, body.get("status"));
+    assertNotNull(body.get("timestamp"));
   }
 }
