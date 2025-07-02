@@ -125,7 +125,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     taskEngine.execute(entity, context, "afterValidationCreate");
 
     taskEngine.execute(entity, context, "beforeCreate");
-    entity = provider.create(configuration, entity);
+    entity = provider.create(context, configuration, entity);
     taskEngine.execute(entity, context, "afterCreate");
 
     return entity;
@@ -156,7 +156,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     taskEngine.execute(entity, context, "afterValidationUpdate");
 
     taskEngine.execute(entity, context, "beforeUpdate");
-    entity = provider.update(configuration, id, entity);
+    entity = provider.update(context, configuration, id, entity);
     taskEngine.execute(entity, context, "afterUpdate");
 
     return entity;
@@ -187,7 +187,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     taskEngine.execute(entity, context, "afterValidationPatch");
 
     taskEngine.execute(entity, context, "beforePatch");
-    entity = provider.patch(configuration, id, entity);
+    entity = provider.patch(context, configuration, id, entity);
     taskEngine.execute(entity, context, "afterPatch");
 
     return entity;
@@ -217,7 +217,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     taskEngine.execute(entity, context, "afterValidationDelete");
 
     taskEngine.execute(entity, context, "beforeDelete");
-    boolean state = provider.delete(configuration, id);
+    boolean state = provider.delete(context, configuration, id, entity);
     taskEngine.execute(entity, context, "afterDelete");
 
     return state;
@@ -249,7 +249,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     taskEngine.execute(entity, context, "afterValidationFindById");
 
     taskEngine.execute(entity, context, "beforeFindById");
-    entity = provider.findById(configuration, id);
+    entity = provider.findById(context, configuration, id, entity);
     taskEngine.execute(entity, context, "afterFindById");
 
     return entity;
@@ -283,7 +283,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     taskEngine.execute(entity, context, "afterValidationFindAll");
 
     taskEngine.execute(entity, context, "beforeFindAll");
-    var entities = provider.findAll(configuration, filters, pageable);
+    var entities = provider.findAll(context, configuration, filters, pageable, entity);
     taskEngine.execute(entity, context, "afterFindAll");
 
     return entities;

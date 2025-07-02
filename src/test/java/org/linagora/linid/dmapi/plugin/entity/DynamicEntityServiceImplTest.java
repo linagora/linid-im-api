@@ -88,14 +88,14 @@ public class DynamicEntityServiceImplTest {
     Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
-    Mockito.when(provider.create(Mockito.any(), Mockito.any())).thenReturn(null);
+    Mockito.when(provider.create(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleCreate(request, "test", Map.of());
 
     Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
     Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.eq("CREATE"), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeCreate"));
-    Mockito.verify(provider, Mockito.times(1)).create(Mockito.any(), Mockito.any());
+    Mockito.verify(provider, Mockito.times(1)).create(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
@@ -130,7 +130,7 @@ public class DynamicEntityServiceImplTest {
     Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
-    Mockito.when(provider.update(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
+    Mockito.when(provider.update(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleUpdate(request, "test", "id", Map.of());
 
@@ -139,7 +139,7 @@ public class DynamicEntityServiceImplTest {
             "UPDATE"),
         Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeUpdate"));
-    Mockito.verify(provider, Mockito.times(1)).update(Mockito.any(), Mockito.any(), Mockito.any());
+    Mockito.verify(provider, Mockito.times(1)).update(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
@@ -174,7 +174,7 @@ public class DynamicEntityServiceImplTest {
     Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
-    Mockito.when(provider.patch(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
+    Mockito.when(provider.patch(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handlePatch(request, "test", "id", Map.of());
 
@@ -183,7 +183,7 @@ public class DynamicEntityServiceImplTest {
             "UPDATE"),
         Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforePatch"));
-    Mockito.verify(provider, Mockito.times(1)).patch(Mockito.any(), Mockito.any(), Mockito.any());
+    Mockito.verify(provider, Mockito.times(1)).patch(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
@@ -218,7 +218,7 @@ public class DynamicEntityServiceImplTest {
     Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
-    Mockito.when(provider.delete(Mockito.any(), Mockito.any())).thenReturn(true);
+    Mockito.when(provider.delete(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 
     service.handleDelete(request, "test", "id");
 
@@ -227,7 +227,7 @@ public class DynamicEntityServiceImplTest {
             "DELETE"),
         Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeDelete"));
-    Mockito.verify(provider, Mockito.times(1)).delete(Mockito.any(), Mockito.any());
+    Mockito.verify(provider, Mockito.times(1)).delete(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
@@ -262,7 +262,7 @@ public class DynamicEntityServiceImplTest {
     Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
-    Mockito.when(provider.findById(Mockito.any(), Mockito.any())).thenReturn(null);
+    Mockito.when(provider.findById(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleFindById(request, "test", "id");
 
@@ -271,7 +271,7 @@ public class DynamicEntityServiceImplTest {
             "READ"),
         Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindById"));
-    Mockito.verify(provider, Mockito.times(1)).findById(Mockito.any(), Mockito.any());
+    Mockito.verify(provider, Mockito.times(1)).findById(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
@@ -306,7 +306,7 @@ public class DynamicEntityServiceImplTest {
     Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
-    Mockito.when(provider.findAll(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
+    Mockito.when(provider.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleFindAll(request, "test", MultiValueMap.fromMultiValue(Map.of()), null);
 
@@ -315,7 +315,7 @@ public class DynamicEntityServiceImplTest {
         Mockito.eq("READ"),
         Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindAll"));
-    Mockito.verify(provider, Mockito.times(1)).findAll(Mockito.any(), Mockito.any(), Mockito.any());
+    Mockito.verify(provider, Mockito.times(1)).findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
