@@ -29,6 +29,8 @@ package org.linagora.linid.dmapi.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.linagora.linid.dmapicore.exception.ApiException;
+import org.linagora.linid.dmapicore.i18n.I18nMessage;
 import org.linagora.linid.dmapicore.plugin.entity.DynamicEntity;
 import org.linagora.linid.dmapicore.plugin.entity.DynamicEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,7 +170,13 @@ public class GenericController {
    */
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteEntity(@PathVariable String entity, @PathVariable String id, HttpServletRequest request) {
-    service.handleDelete(request, entity, id);
+    if (!service.handleDelete(request, entity, id)) {
+      throw new ApiException(404, I18nMessage.of(
+          "error.router.unknown.route",
+          Map.of("route", request.getRequestURI())
+      ));
+    }
+
     return ResponseEntity.noContent().build();
   }
 }
