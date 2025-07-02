@@ -96,7 +96,7 @@ public class GenericController {
                                         @RequestBody Map<String, Object> body,
                                         HttpServletRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(service.handleCreate(request, entity, body));
+        .body(service.handleCreate(request, entity, body).getAttributes());
   }
 
   /**
@@ -112,7 +112,9 @@ public class GenericController {
                                        @RequestParam MultiValueMap<String, String> filters,
                                        Pageable pageable,
                                        HttpServletRequest request) {
-    Page<DynamicEntity> resources = service.handleFindAll(request, entity, filters, pageable);
+    Page<Map<String, Object>> resources = service
+        .handleFindAll(request, entity, filters, pageable)
+        .map(DynamicEntity::getAttributes);
 
     return ResponseEntity.status(this.getStatus(resources))
         .body(resources);
@@ -127,7 +129,7 @@ public class GenericController {
    */
   @GetMapping("/{id}")
   public ResponseEntity<?> getEntityById(@PathVariable String entity, @PathVariable String id, HttpServletRequest request) {
-    return ResponseEntity.ok(service.handleFindById(request, entity, id));
+    return ResponseEntity.ok(service.handleFindById(request, entity, id).getAttributes());
   }
 
   /**
@@ -142,7 +144,7 @@ public class GenericController {
   public ResponseEntity<?> putEntity(@PathVariable String entity, @PathVariable String id,
                                      @RequestBody Map<String, Object> body,
                                      HttpServletRequest request) {
-    return ResponseEntity.ok(service.handleUpdate(request, entity, id, body));
+    return ResponseEntity.ok(service.handleUpdate(request, entity, id, body).getAttributes());
   }
 
   /**
@@ -158,7 +160,7 @@ public class GenericController {
                                        @PathVariable String id,
                                        @RequestBody Map<String, Object> body,
                                        HttpServletRequest request) {
-    return ResponseEntity.ok(service.handlePatch(request, entity, id, body));
+    return ResponseEntity.ok(service.handlePatch(request, entity, id, body).getAttributes());
   }
 
   /**

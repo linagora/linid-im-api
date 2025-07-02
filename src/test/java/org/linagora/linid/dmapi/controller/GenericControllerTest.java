@@ -78,7 +78,7 @@ public class GenericControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    assertEquals(expected, response.getBody());
+    assertEquals(expected.getAttributes(), response.getBody());
   }
 
   @Test
@@ -115,7 +115,7 @@ public class GenericControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(expected, response.getBody());
+    assertEquals(expected.getAttributes(), response.getBody());
   }
 
   @Test
@@ -130,7 +130,7 @@ public class GenericControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(expected, response.getBody());
+    assertEquals(expected.getAttributes(), response.getBody());
   }
 
   @Test
@@ -145,7 +145,7 @@ public class GenericControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(expected, response.getBody());
+    assertEquals(expected.getAttributes(), response.getBody());
   }
 
   @Test
