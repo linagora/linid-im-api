@@ -38,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.linagora.linid.dmapicore.plugin.config.dto.ProviderConfiguration;
 import org.linagora.linid.dmapicore.plugin.entity.DynamicEntity;
 import org.linagora.linid.dmapicore.plugin.provider.ProviderPlugin;
+import org.linagora.linid.dmapicore.plugin.task.TaskExecutionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -89,33 +90,37 @@ public class ProviderFactoryImplTest {
     }
 
     @Override
-    public DynamicEntity create(ProviderConfiguration configuration, DynamicEntity dynamicEntity) {
+    public DynamicEntity create(TaskExecutionContext context, ProviderConfiguration configuration, DynamicEntity dynamicEntity) {
       return null;
     }
 
     @Override
-    public DynamicEntity update(ProviderConfiguration configuration, String id, DynamicEntity dynamicEntity) {
+    public DynamicEntity update(TaskExecutionContext context, ProviderConfiguration configuration, String id,
+                                DynamicEntity dynamicEntity) {
       return null;
     }
 
     @Override
-    public DynamicEntity patch(ProviderConfiguration configuration, String id, DynamicEntity dynamicEntity) {
+    public DynamicEntity patch(TaskExecutionContext context, ProviderConfiguration configuration, String id,
+                               DynamicEntity dynamicEntity) {
       return null;
     }
 
     @Override
-    public boolean delete(ProviderConfiguration configuration, String id) {
+    public boolean delete(TaskExecutionContext context, ProviderConfiguration configuration, String id,
+                          DynamicEntity dynamicEntity) {
       return false;
     }
 
     @Override
-    public DynamicEntity findById(ProviderConfiguration configuration, String id) {
+    public DynamicEntity findById(TaskExecutionContext context, ProviderConfiguration configuration, String id,
+                                  DynamicEntity dynamicEntity) {
       return null;
     }
 
     @Override
-    public Page<DynamicEntity> findAll(ProviderConfiguration configuration, MultiValueMap<String, String> filters,
-                                       Pageable pageable) {
+    public Page<DynamicEntity> findAll(TaskExecutionContext context, ProviderConfiguration configuration,
+                                       MultiValueMap<String, String> filters, Pageable pageable, DynamicEntity dynamicEntity) {
       return null;
     }
   }

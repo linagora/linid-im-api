@@ -209,18 +209,36 @@ public class PluginConfigurationServiceImpl implements PluginConfigurationServic
       routeDescriptions.add(
           new RouteDescription("GET", String.format("/metadata/entities/%s", entity.getName()), entity.getName(),
               List.of()));
-      routeDescriptions.add(new RouteDescription("POST", String.format("/api/%s", entity.getRoute()), entity.getName(),
-          List.of()));
-      routeDescriptions.add(
-          new RouteDescription("GET", String.format("/api/%s", entity.getRoute()), entity.getName(), List.of()));
-      routeDescriptions.add(
-          new RouteDescription("GET", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
-      routeDescriptions.add(
-          new RouteDescription("PUT", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
-      routeDescriptions.add(
-          new RouteDescription("PATCH", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
-      routeDescriptions.add(
-          new RouteDescription("DELETE", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
+
+      if (!entity.getDisabledRoutes().contains("create")) {
+        routeDescriptions.add(new RouteDescription("POST", String.format("/api/%s", entity.getRoute()), entity.getName(),
+            List.of()));
+      }
+
+      if (!entity.getDisabledRoutes().contains("findAll")) {
+        routeDescriptions.add(
+            new RouteDescription("GET", String.format("/api/%s", entity.getRoute()), entity.getName(), List.of()));
+      }
+
+      if (!entity.getDisabledRoutes().contains("findById")) {
+        routeDescriptions.add(
+            new RouteDescription("GET", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
+      }
+
+      if (!entity.getDisabledRoutes().contains("update")) {
+        routeDescriptions.add(
+            new RouteDescription("PUT", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
+      }
+
+      if (!entity.getDisabledRoutes().contains("patch")) {
+        routeDescriptions.add(
+            new RouteDescription("PATCH", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
+      }
+
+      if (!entity.getDisabledRoutes().contains("delete")) {
+        routeDescriptions.add(
+            new RouteDescription("DELETE", String.format("/api/%s/{id}", entity.getRoute()), entity.getName(), List.of("id")));
+      }
     });
 
     this.routeRegistry.getPlugins().forEach(plugin -> {

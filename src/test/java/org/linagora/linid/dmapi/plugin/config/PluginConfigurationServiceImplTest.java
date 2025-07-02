@@ -242,6 +242,29 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
+  public void shouldReturnExcludeDisabledRoutes() {
+    EntityConfiguration entity = new EntityConfiguration();
+    entity.setName("User");
+    entity.setRoute("users");
+    entity.setDisabledRoutes(List.of("create", "update", "patch", "delete", "findById", "findAll"));
+
+    RootConfiguration root = new RootConfiguration();
+    root.setEntities(List.of(entity));
+    injectRootConfiguration(root);
+
+    List<RouteDescription> pluginRoutes = List.of(
+        new RouteDescription("GET", "/custom/plugin", "User", List.of())
+    );
+    Mockito.when(mockRoutePlugin.getRoutes(root.getEntities())).thenReturn(pluginRoutes);
+
+    List<RouteDescription> descriptions = service.getRouteDescriptions();
+
+    assertTrue(descriptions.stream().anyMatch(r -> r.path().equals("/actuator/health")));
+    assertTrue(descriptions.stream().noneMatch(r -> r.path().startsWith("/api/users")));
+    assertTrue(descriptions.stream().anyMatch(r -> r.path().equals("/custom/plugin")));
+  }
+
+  @Test
   public void shouldReturnEntityDescriptionsFromConfiguration() {
     AttributeConfiguration attr = new AttributeConfiguration();
     attr.setName("uid");
