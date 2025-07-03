@@ -334,11 +334,12 @@ public class DynamicEntityServiceImplTest {
   }
 
   @Test
-  @DisplayName("test updateEntity: should throw exception without configuration")
-  public void testGetEntity() {
+  @DisplayName("test updateEntityConfiguration: should throw exception without configuration")
+  public void testUpdateEntityConfiguration() {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.empty());
 
-    ApiException ex = assertThrows(ApiException.class, () -> service.updateEntity(new DynamicEntity(), "test"));
+    ApiException ex =
+        assertThrows(ApiException.class, () -> service.updateEntityConfiguration(new DynamicEntity(), "test"));
     assertEquals("error.entity.unknown", ex.getError().key());
     assertEquals(Map.of("entity", "test"), ex.getError().context());
     assertEquals(404, ex.getStatusCode());

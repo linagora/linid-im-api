@@ -92,7 +92,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
    * @param entityName the name of the entity whose configuration should be loaded
    * @throws ApiException if the configuration for the given entity name is not found
    */
-  public void updateEntity(DynamicEntity entity, String entityName) {
+  public void updateEntityConfiguration(DynamicEntity entity, String entityName) {
     var configuration = configurationService.getEntityConfiguration(entityName)
         .orElseThrow(() -> new ApiException(404, I18nMessage.of("error.entity.unknown", Map.of("entity",
             entityName))));
@@ -116,7 +116,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     authorizationPlugin.isAuthorized(request, entity, "CREATE", context);
     taskEngine.execute(entity, context, "afterPermissionValidationCreate");
 
-    updateEntity(entity, entityName);
+    updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
     var configuration = getProviderConfiguration(entity);
 
@@ -147,7 +147,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     authorizationPlugin.isAuthorized(request, entity, id, "UPDATE", context);
     taskEngine.execute(entity, context, "afterPermissionValidationUpdate");
 
-    updateEntity(entity, entityName);
+    updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
     var configuration = getProviderConfiguration(entity);
 
@@ -178,7 +178,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     authorizationPlugin.isAuthorized(request, entity, id, "UPDATE", context);
     taskEngine.execute(entity, context, "afterPermissionValidationPatch");
 
-    updateEntity(entity, entityName);
+    updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
     var configuration = getProviderConfiguration(entity);
 
@@ -208,7 +208,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     authorizationPlugin.isAuthorized(request, entity, id, "DELETE", context);
     taskEngine.execute(entity, context, "afterPermissionValidationDelete");
 
-    updateEntity(entity, entityName);
+    updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
     var configuration = getProviderConfiguration(entity);
 
@@ -240,7 +240,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     authorizationPlugin.isAuthorized(request, entity, id, "READ", context);
     taskEngine.execute(entity, context, "afterPermissionValidationFindById");
 
-    updateEntity(entity, entityName);
+    updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
     var configuration = getProviderConfiguration(entity);
 
@@ -274,7 +274,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     authorizationPlugin.isAuthorized(request, entity, filters, "READ", context);
     taskEngine.execute(entity, context, "afterPermissionValidationFindAll");
 
-    updateEntity(entity, entityName);
+    updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
     var configuration = getProviderConfiguration(entity);
 
