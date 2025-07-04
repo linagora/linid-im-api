@@ -36,6 +36,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.linagora.linid.dmapicore.plugin.entity.DynamicEntity;
+import org.linagora.linid.dmapicore.plugin.entity.DynamicEntityMapper;
 import org.linagora.linid.dmapicore.plugin.entity.DynamicEntityService;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -55,6 +56,9 @@ public class GenericControllerTest {
   @Mock
   private DynamicEntityService service;
 
+  @Mock
+  private DynamicEntityMapper mapper;
+
   @InjectMocks
   private GenericController controller;
 
@@ -73,6 +77,7 @@ public class GenericControllerTest {
     Map<String, Object> requestBody = Map.of("field", "value");
     DynamicEntity expected = new DynamicEntity();
     Mockito.when(service.handleCreate(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(expected);
+    Mockito.when(mapper.apply(Mockito.any())).thenReturn(expected.getAttributes());
 
     ResponseEntity<?> response = controller.createEntity("testEntity", requestBody, request);
 
@@ -86,7 +91,8 @@ public class GenericControllerTest {
   public void testGetEntities() {
     var request = Mockito.mock(HttpServletRequest.class);
     Page<DynamicEntity> expected = Page.empty();
-    Mockito.when(service.handleFindAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(expected);
+    Mockito.when(service.handleFindAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
+        .thenReturn(expected);
 
     ResponseEntity<?> response = controller.getEntities(
         "testEntity",
@@ -106,6 +112,7 @@ public class GenericControllerTest {
     var request = Mockito.mock(HttpServletRequest.class);
     var expected = new DynamicEntity();
     Mockito.when(service.handleFindById(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(expected);
+    Mockito.when(mapper.apply(Mockito.any())).thenReturn(expected.getAttributes());
 
     ResponseEntity<?> response = controller.getEntityById(
         "testEntity",
@@ -125,6 +132,7 @@ public class GenericControllerTest {
     Map<String, Object> requestBody = Map.of("field", "value");
     var expected = new DynamicEntity();
     Mockito.when(service.handleUpdate(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(expected);
+    Mockito.when(mapper.apply(Mockito.any())).thenReturn(expected.getAttributes());
 
     ResponseEntity<?> response = controller.putEntity("testEntity", "id", requestBody, request);
 
@@ -140,6 +148,7 @@ public class GenericControllerTest {
     Map<String, Object> requestBody = Map.of("field", "value");
     var expected = new DynamicEntity();
     Mockito.when(service.handlePatch(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(expected);
+    Mockito.when(mapper.apply(Mockito.any())).thenReturn(expected.getAttributes());
 
     ResponseEntity<?> response = controller.patchEntity("testEntity", "id", requestBody, request);
 

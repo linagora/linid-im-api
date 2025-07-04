@@ -31,7 +31,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.linagora.linid.dmapicore.exception.ApiException;
 import org.linagora.linid.dmapicore.i18n.I18nMessage;
-import org.linagora.linid.dmapicore.plugin.entity.DynamicEntity;
+import org.linagora.linid.dmapicore.plugin.entity.DynamicEntityMapper;
 import org.linagora.linid.dmapicore.plugin.entity.DynamicEntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -55,8 +55,8 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller providing generic CRUD operations for dynamic entities.
  *
  * <p>
- * The controller handles HTTP requests for creating, retrieving, updating, patching, and deleting entities dynamically based on
- * the entity name provided in the URL path.
+ * The controller handles HTTP requests for creating, retrieving, updating, patching, and deleting entities dynamically
+ * based on the entity name provided in the URL path.
  *
  * <p>
  * It delegates business logic to the {@link DynamicEntityService}.
@@ -68,9 +68,11 @@ public class GenericController {
 
   private final DynamicEntityService service;
 
+  private final DynamicEntityMapper mapper;
+
   /**
-   * Determines the HTTP status code for a paged response. Returns 206 (Partial Content) if multiple pages exist, otherwise 200
-   * (OK).
+   * Determines the HTTP status code for a paged response. Returns 206 (Partial Content) if multiple pages exist,
+   * otherwise 200 (OK).
    *
    * @param resources the page of resources to check
    * @param <T> the type of resource contained in the page
@@ -95,8 +97,10 @@ public class GenericController {
   public ResponseEntity<?> createEntity(@PathVariable String entity,
                                         @RequestBody Map<String, Object> body,
                                         HttpServletRequest request) {
+    var dynamicEntity = service.handleCreate(request, entity, body);
+
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(service.handleCreate(request, entity, body).getAttributes());
+        .body(mapper.apply(dynamicEntity));
   }
 
   /**
@@ -114,7 +118,7 @@ public class GenericController {
                                        HttpServletRequest request) {
     Page<Map<String, Object>> resources = service
         .handleFindAll(request, entity, filters, pageable)
-        .map(DynamicEntity::getAttributes);
+        .map(mapper);
 
     return ResponseEntity.status(this.getStatus(resources))
         .body(resources);
@@ -128,8 +132,10 @@ public class GenericController {
    * @return a ResponseEntity containing the entity and HTTP status 200
    */
   @GetMapping("/{id}")
-  public ResponseEntity<?> getEntityById(@PathVariable String entity, @PathVariable String id, HttpServletRequest request) {
-    return ResponseEntity.ok(service.handleFindById(request, entity, id).getAttributes());
+  public ResponseEntity<?> getEntityById(@PathVariable String entity, @PathVariable String id,
+                                         HttpServletRequest request) {
+    var dynamicEntity = service.handleFindById(request, entity, id);
+    return ResponseEntity.ok(mapper.apply(dynamicEntity));
   }
 
   /**
@@ -144,7 +150,8 @@ public class GenericController {
   public ResponseEntity<?> putEntity(@PathVariable String entity, @PathVariable String id,
                                      @RequestBody Map<String, Object> body,
                                      HttpServletRequest request) {
-    return ResponseEntity.ok(service.handleUpdate(request, entity, id, body).getAttributes());
+    var dynamicEntity = service.handleUpdate(request, entity, id, body);
+    return ResponseEntity.ok(mapper.apply(dynamicEntity));
   }
 
   /**
@@ -160,7 +167,8 @@ public class GenericController {
                                        @PathVariable String id,
                                        @RequestBody Map<String, Object> body,
                                        HttpServletRequest request) {
-    return ResponseEntity.ok(service.handlePatch(request, entity, id, body).getAttributes());
+    var dynamicEntity = service.handlePatch(request, entity, id, body);
+    return ResponseEntity.ok(mapper.apply(dynamicEntity));
   }
 
   /**
@@ -171,7 +179,8 @@ public class GenericController {
    * @return a ResponseEntity with HTTP status 204 (No Content)
    */
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteEntity(@PathVariable String entity, @PathVariable String id, HttpServletRequest request) {
+  public ResponseEntity<?> deleteEntity(@PathVariable String entity, @PathVariable String id,
+                                        HttpServletRequest request) {
     if (!service.handleDelete(request, entity, id)) {
       throw new ApiException(404, I18nMessage.of(
           "error.router.unknown.route",

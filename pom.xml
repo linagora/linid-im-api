@@ -72,7 +72,7 @@
     <dependency>
       <groupId>org.linagora.linid</groupId>
       <artifactId>dm-api-core</artifactId>
-      <version>0.5.0</version>
+      <version>0.6.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
