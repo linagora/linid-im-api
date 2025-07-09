@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.linagora.linid</groupId>
   <artifactId>directory-manager-api</artifactId>
-  <version>0.2.0</version>
+  <version>0.3.0</version>
   <name>dm-api</name>
   <description>dm-api</description>
   <url></url>
