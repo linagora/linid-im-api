@@ -3,17 +3,35 @@
 ## Git conventions
 
 ### 💬 Branch naming
+Voici une version enrichie pour prendre en compte **tous les types de branches** que tu mentionnes, tout en gardant une structure claire et professionnelle :
 
-All branches must follow one of the following naming patterns:
+---
 
-| Type    | Pattern                       | Example                     |
-|---------|-------------------------------|-----------------------------|
-| Main    | `main` or `dev`               | `main`                      |
-| Feature | `feature/<short-description>` | `feature/kafka-integration` |
-| Hotfix  | `hotfix/<short-description>`  | `hotfix/fix-offset-issue`   |
+## 🌿 Branch Naming Convention
 
-Allowed characters: lowercase letters, numbers, dashes (`-`), underscores (`_`), and dots (`.`).  
-Branch names must be descriptive and concise.
+All branches must follow one of the predefined naming patterns listed below:
+
+| Type        | Pattern                           | Example                        |
+| ----------- | --------------------------------- |--------------------------------|
+| Main        | `main` or `dev`                   | `main`                         |
+| Feature     | `feature/<short-description>`     | `feature/kafka_integration`    |
+| Bugfix      | `bugfix/<short-description>`      | `bugfix/null_pointer_handling` |
+| Improvement | `improvement/<short-description>` | `improvement/api_docs_format`  |
+| Library     | `library/<library-name>`          | `library/jinjava_upgrade`      |
+| Hotfix      | `hotfix/<short-description>`      | `hotfix/fix_offset_issue`      |
+
+---
+
+### ✅ Rules
+
+* Use only **lowercase letters**, **numbers**, **dashes (`-`)**, **underscores (`_`)**, and **dots (`.`)**.
+* Branch names must be **descriptive** and **concise**.
+* Avoid generic names like `fix`, `update`, or `new-feature`.
+
+---
+
+Would you like a Git hook or CI check to enforce this convention automatically?
+
 
 ### 💬 Commit message format
 
@@ -94,7 +112,7 @@ npm install -g @mermaid-js/mermaid-cli
 Example command to generate a PNG from a Mermaid file:
 
 ```bash
-mmdc -i docs/X.mmd -o docs/X.png
+mmdc -i docs/X.mmd -o docs/X.svg
 ```
 
 💡 _Any modification to a Mermaid diagram **must include a manual regeneration** of its corresponding PNG image._
