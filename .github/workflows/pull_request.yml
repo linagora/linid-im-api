@@ -1,0 +1,112 @@
+name: Pull request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  delete-comments:
+    name: Delete bot comment(s)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: izhangzhihao/delete-comment@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          delete_user_name: github-actions[bot]
+          issue_number: ${{ github.event.number }}
+
+  branch-naming-rules:
+    name: Check branch name
+    runs-on: ubuntu-latest
+    steps:
+      - uses: deepakputhraya/action-branch-name@master
+        with:
+          regex: '^(feature|bugfix|improvement|library||hotfix)\/[a-z0-9_.-]+$'
+          allowed_prefixes: 'feature,bugfix,improvement,library,hotfix'
+          ignore: main
+          min_length: 5
+          max_length: 50
+
+  commit-message-check:
+    name: Commit message check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Check commit message with semantic-version plugin
+        run: mvn -ntp io.github.zorin95670:semantic-version:0.4.0:check-commit -DnoMerge=true
+
+  checkstyle:
+    name: Code style
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 11 for x64
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          architecture: x64
+      - name: Execute checkstyle
+        run: mvn -ntp checkstyle:check
+
+  tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21 for x64
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          architecture: x64
+      - name: Install Pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+      - name: Execute unit tests
+        run: mvn -ntp test
+      - name: Execute mutation tests
+        run: mvn -ntp org.pitest:pitest-maven:mutationCoverage
+      - name: Extract summary from pitest
+        run: echo "<html><head></head><body><h1>Pit Test Coverage Report</h1><h3>Project Summary</h3>" > pitest.html && perl -0777 -ne 'print "$1\n" if /(<table>.*?<\/table>)/s' target/pit-reports/index.html >> pitest.html && echo "</body></html>" >> pitest.html
+      - name: Convert pitest report to markdown
+        run: pandoc --from html --to markdown_github --no-highlight pitest.html
+      - name: Post comment
+        uses: luukkemp/pr-comment@2024.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: pitest.html
+      - name: Execute sonar scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -ntp sonar:sonar -Dsonar.token=$SONAR_TOKEN -Dsonar.branch.name=${{ github.head_ref }}
+
+  check-dependencies:
+    name: Check dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 11 for x64
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          architecture: x64
+      - name: Execute check dependencies
+        run: mvn -ntp versions:display-dependency-updates -DprocessDependencyManagement=false > dependency-updates.txt
+      - name: Post comment
+        uses: luukkemp/pr-comment@2024.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: dependency-updates.txt
