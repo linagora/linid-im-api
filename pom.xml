@@ -22,27 +22,29 @@
   </licenses>
   <developers>
     <developer>
-      <id>853</id>
+      <id>Zorin95670</id>
       <name>Vincent MOITTIE</name>
-      <email>vmoittie@linagora.com</email>
+      <email>moittie.vincent@gmail.com</email>
     </developer>
   </developers>
-  <distributionManagement>
-    <repository>
-      <id>nexus</id>
-      <url>https://nexus-repository.linagora.com/repository/maven-releases/</url>
-    </repository>
-    <snapshotRepository>
-      <id>nexus</id>
-      <url>https://nexus-repository.linagora.com/repository/maven-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
+  <scm>
+    <connection>scm:git:git://github.com/linagora/linid-im-api.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com:linagora/linid-im-api.git</developerConnection>
+    <url>https://github.com/linagora/linid-im-api</url>
+  </scm>
   <properties>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <java.version>21</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring-boot.version>3.5.0</spring-boot.version>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.projectKey>linagora_linid-im-api</sonar.projectKey>
+    <sonar.projectName>linid-im-api</sonar.projectName>
+    <sonar.organization>linagora-sonarcube-255</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+    <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
   </properties>
   <dependencies>
     <dependency>
@@ -227,6 +229,29 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>3.2.7</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
+        <version>0.6.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>central</publishingServerId>
+          <waitUntil>published</waitUntil>
+          <autoPublish>true</autoPublish>
+        </configuration>
       </plugin>
     </plugins>
   </build>
