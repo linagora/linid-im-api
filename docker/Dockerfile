@@ -6,6 +6,6 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
-COPY --from=build /app/target/*.jar dm-api.jar
+COPY --from=build /app/target/*.jar identity-manager.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "dm-api.jar"]
+ENTRYPOINT ["java", "-jar", "identity-manager.jar"]

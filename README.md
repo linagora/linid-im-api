@@ -1,6 +1,6 @@
-# dm-api
+# linid-im-api
 
-LinID Directory Manager API (dm-api) provides a plugin-based, dynamic-entity REST service with external configuration,
+LinID Identity Manager API (linid-im-api) provides a plugin-based, dynamic-entity REST service with external configuration,
 plugins, and translations.
 
 ## Configuration
@@ -145,7 +145,7 @@ From the project root (where `pom.xml` resides), simply run:
 mvn clean package
 ```
 
-This produces an executable JAR under `target/`, e.g. `dm-api-<version>.jar`.
+This produces an executable JAR under `target/`, e.g. `linid-im-api-<version>.jar`.
 
 To run:
 
@@ -155,7 +155,7 @@ export PLUGIN_LOADER_PATH=/home/plugins
 export I18N_EXTERNAL_PATH=/home/i18n
 export I18N_MERGE_ORDER="plugin,external,internal"
 
-java -jar target/dm-api-<version>.jar
+java -jar target/linid-im-api-<version>.jar
 ```
 
 ### 2. Docker
@@ -166,7 +166,7 @@ A Docker image can encapsulate the built JAR. Expect a Dockerfile that copies th
 #### Build Docker image
 
 ```bash
-docker build -f docker/Dockerfile -t dm-api .
+docker build -f docker/Dockerfile -t linid-im-api .
 ```
 
 Start the desired environment:

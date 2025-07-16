@@ -24,3 +24,14 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Root package for the plugin system of the LinID Identity Manager API.
+ *
+ * <p>This package defines the foundational contracts and shared components for all plugin types,
+ * including task execution, validation, and routing.
+ *
+ * <p>Plugins are resolved dynamically at runtime using the Spring PluginRegistry and configured via
+ * {@link org.linagora.linid.dmapicore.plugin.config.PluginConfigurationService}.
+ */
+package org.linagora.linid.im.plugin;
+
