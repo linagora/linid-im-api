@@ -24,3 +24,35 @@
  * LinID Identity Manager software.
  */
 
+package org.linagora.linid.im.plugin.provider;
+
+import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.linagora.linid.dmapicore.plugin.provider.ProviderFactory;
+import org.linagora.linid.dmapicore.plugin.provider.ProviderPlugin;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.plugin.core.PluginRegistry;
+import org.springframework.stereotype.Component;
+
+/**
+ * Implementation of the {@link ProviderFactory} interface.
+ *
+ * <p>
+ * This factory is responsible for resolving a {@link ProviderPlugin} by its name using a plugin registry.
+ */
+@Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class ProviderFactoryImpl implements ProviderFactory {
+  /**
+   * Registry containing all available {@link ProviderPlugin} instances. Used to resolve the appropriate plugin by matching its
+   * supported name.
+   */
+  private final PluginRegistry<ProviderPlugin, String> providerRegistry;
+
+  @Override
+  public Optional<ProviderPlugin> getProviderByName(final String name) {
+    return providerRegistry.getPlugins().stream()
+        .filter(provider -> provider.supports(name))
+        .findFirst();
+  }
+}

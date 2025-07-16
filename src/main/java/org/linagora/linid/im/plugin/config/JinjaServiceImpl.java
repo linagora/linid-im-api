@@ -24,3 +24,53 @@
  * LinID Identity Manager software.
  */
 
+package org.linagora.linid.im.plugin.config;
+
+import com.hubspot.jinjava.Jinjava;
+import java.util.HashMap;
+import java.util.Map;
+import org.linagora.linid.dmapicore.plugin.config.JinjaService;
+import org.linagora.linid.dmapicore.plugin.entity.DynamicEntity;
+import org.linagora.linid.dmapicore.plugin.task.TaskExecutionContext;
+import org.springframework.stereotype.Service;
+
+/**
+ * Implementation of the {@link JinjaService} interface using the Jinjava template engine.
+ *
+ * <p>This service provides methods to render Jinja-based templates using a task execution context,
+ * an optional dynamic entity, and optional additional variables.
+ */
+@Service
+public class JinjaServiceImpl implements JinjaService {
+
+  /**
+   * The Jinjava engine instance used to render Jinja templates.
+   */
+  private final Jinjava jinjava = new Jinjava();
+
+  @Override
+  public String render(TaskExecutionContext taskContext, String template) {
+    return render(taskContext, null, Map.of(), template);
+  }
+
+  @Override
+  public String render(TaskExecutionContext taskContext, DynamicEntity entity, String template) {
+    return render(taskContext, entity, Map.of(), template);
+  }
+
+  @Override
+  public String render(TaskExecutionContext taskContext, DynamicEntity entity, Map<String, Object> map, String template) {
+    var context = new HashMap<String, Object>();
+
+    if (entity == null) {
+      context.put("entity", Map.of());
+    } else {
+      context.put("entity", entity.getAttributes());
+    }
+
+    context.put("context", taskContext);
+    context.putAll(map);
+
+    return jinjava.render(template, context);
+  }
+}

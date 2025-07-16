@@ -8,12 +8,10 @@
     <version>3.5.0</version>
     <relativePath></relativePath>
   </parent>
-  <groupId>org.linagora.linid</groupId>
-  <artifactId>directory-manager-api</artifactId>
+  <groupId>org.linagora.linid.im</groupId>
+  <artifactId>identity-manager-api</artifactId>
   <version>0.3.0</version>
-  <name>dm-api</name>
-  <description>dm-api</description>
-  <url></url>
+  <name>identity-manager-api</name>
   <licenses>
     <license>
       <name>GNU Affero General Public License v3.0</name>
@@ -186,10 +184,10 @@
         </dependencies>
         <configuration>
           <targetClasses>
-            <param>org.linagora.linid.dmapi.*</param>
+            <param>org.linagora.linid.im.*</param>
           </targetClasses>
           <targetTests>
-            <param>org.linagora.linid.dmapi.*</param>
+            <param>org.linagora.linid.im.*</param>
           </targetTests>
           <mutators>
             <mutator>STRONGER</mutator>
