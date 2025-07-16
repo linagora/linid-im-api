@@ -24,3 +24,15 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Provides core classes and interfaces for validating dynamic entities using validation plugins.
+ *
+ * <p>This package includes the {@link io.github.linagora.linid.im.plugin.validation.ValidationEngineImpl}
+ * implementation which executes validation logic based on configured phases, plugins, and dynamic attribute values.
+ *
+ * <p>Validation plugins are dynamically registered using Spring PluginRegistry and configured both globally and
+ * per attribute. Validation errors are reported using {@link io.github.linagora.linid.im.i18n.I18nMessage} and encapsulated in
+ * {@link io.github.linagora.linid.im.exception.ApiException}.
+ */
+package io.github.linagora.linid.im.plugin.validation;
+

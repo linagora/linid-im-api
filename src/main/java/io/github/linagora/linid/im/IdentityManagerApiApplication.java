@@ -24,3 +24,30 @@
  * LinID Identity Manager software.
  */
 
+package io.github.linagora.linid.im;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+/**
+ * Entry point for the LinID Identity Manager API Spring Boot application.
+ *
+ * <p>Bootstraps and launches the Spring application context, enabling component scanning,
+ * auto-configuration, and other Spring Boot features.
+ *
+ * <p>After startup, REST controllers, services, and plugin infrastructure are initialized
+ * to handle dynamic entity operations, routing, validation, and tasks.
+ */
+@SpringBootApplication
+public class IdentityManagerApiApplication {
+  
+  /**
+   * Main method to launch the Spring Boot application.
+   *
+   * @param args runtime arguments passed to the application (e.g., profile settings)
+   */
+  public static void main(String[] args) {
+    SpringApplication.run(IdentityManagerApiApplication.class, args);
+  }
+
+}

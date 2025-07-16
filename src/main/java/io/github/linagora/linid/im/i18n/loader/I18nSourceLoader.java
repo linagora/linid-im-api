@@ -24,3 +24,38 @@
  * LinID Identity Manager software.
  */
 
+package io.github.linagora.linid.im.i18n.loader;
+
+import java.util.Map;
+import org.springframework.lang.NonNull;
+
+/**
+ * Strategy interface for loading i18n (internationalization) resources.
+ *
+ * <p>
+ * Implementations are expected to load translations from a specific source (e.g., classpath, external path, plugins), and
+ * optionally declare if they support a specific type (used to determine load order or filtering).
+ */
+public interface I18nSourceLoader {
+  /**
+   * Indicates whether this loader supports the given type.
+   *
+   * <p>
+   * This is typically used to match configuration values (e.g., "classpath", "external", "plugin").
+   *
+   * @param type the source type to check support for (non-null)
+   * @return {@code true} if this loader supports the given type; {@code false} otherwise
+   */
+  boolean supports(@NonNull String type);
+
+  /**
+   * Loads i18n translation files and returns them as a map.
+   *
+   * <p>
+   * The returned structure is a nested map where the outer key is the language code (e.g., "en", "fr"), and the inner map
+   * contains key/value pairs for translation entries.
+   *
+   * @return a map of language codes to their corresponding translation entries
+   */
+  Map<String, Map<String, String>> load();
+}

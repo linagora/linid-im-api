@@ -24,3 +24,53 @@
  * LinID Identity Manager software.
  */
 
+package io.github.linagora.linid.im.i18n.collector;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collector;
+
+/**
+ * Utility class that provides a custom {@link java.util.stream.Collector} implementation to merge multiple
+ * {@code Map<String, Map<String, String>>} structures into a single one.
+ *
+ * <p>
+ * This is particularly useful for combining language-to-translation maps from different sources in an internationalization (i18n)
+ * context.
+ */
+public class I18nMergeCollector {
+  /**
+   * Returns a {@link java.util.stream.Collector} that merges multiple {@code Map<String, Map<String, String>>} into a single
+   * aggregated map.
+   *
+   * <p>
+   * For each input map, all entries are merged by language code. If a language already exists in the accumulator, its
+   * translations are merged (overwritten if duplicated).
+   *
+   * @return a collector that performs a deep merge of maps of language-to-translations.
+   */
+  public static Collector<Map<String, Map<String, String>>, ?, Map<String, Map<String, String>>> toCollect() {
+    return Collector.of(
+        HashMap::new,
+        I18nMergeCollector::merge,
+        I18nMergeCollector::merge
+    );
+  }
+
+  /**
+   * Merges a source map into an accumulator map. For each language key, the translations are added or merged into the
+   * accumulator.
+   *
+   * @param acc the accumulator map that collects the merged results
+   * @param inputs the input map to merge into the accumulator
+   * @return the updated accumulator with merged content
+   */
+  public static Map<String, Map<String, String>> merge(final Map<String, Map<String, String>> acc,
+                                                       final Map<String, Map<String, String>> inputs) {
+    inputs.forEach((language, translation) -> acc
+        .computeIfAbsent(language, k -> new HashMap<>())
+        .putAll(translation));
+
+    return acc;
+  }
+}

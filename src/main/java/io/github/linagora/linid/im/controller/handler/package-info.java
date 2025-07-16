@@ -24,3 +24,11 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Provides global exception handlers and controller advice for the API layer.
+ *
+ * <p>This package contains components responsible for handling and translating exceptions
+ * into standardized HTTP responses, as well as fallback routing logic when no endpoint matches.
+ */
+package io.github.linagora.linid.im.controller.handler;
+

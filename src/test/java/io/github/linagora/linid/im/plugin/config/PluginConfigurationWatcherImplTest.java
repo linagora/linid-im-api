@@ -24,3 +24,42 @@
  * LinID Identity Manager software.
  */
 
+package io.github.linagora.linid.im.plugin.config;
+
+import io.github.linagora.linid.im.corelib.i18n.I18nService;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
+@DisplayName("Test class: PluginConfigurationWatcherImpl")
+public class PluginConfigurationWatcherImplTest {
+
+  @Test
+  @DisplayName("Should trigger onChange when the config file is modified")
+  void shouldTriggerOnChangeOnFileModification() throws IOException, InterruptedException {
+    I18nService i18nService = Mockito.mock(I18nService.class);
+    Mockito.when(i18nService.translate(Mockito.any())).thenReturn("Localized error message");
+
+    PluginConfigurationWatcherImpl watcher = new PluginConfigurationWatcherImpl();
+
+    Path tempDir = Files.createTempDirectory("watcher-test");
+    Path configFile = tempDir.resolve("test-config.yaml");
+    Files.writeString(configFile, "initial");
+
+    CountDownLatch latch = new CountDownLatch(1);
+    Runnable onChange = latch::countDown;
+
+    watcher.watch(configFile, onChange);
+
+    Thread.sleep(200);
+    Files.writeString(configFile, "updated");
+
+    boolean triggered = latch.await(2, TimeUnit.SECONDS);
+    assert triggered : "onChange should have been triggered on file modification";
+  }
+}

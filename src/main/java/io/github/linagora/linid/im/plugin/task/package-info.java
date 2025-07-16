@@ -24,3 +24,8 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Provides components for executing dynamic tasks within the API.
+ */
+package io.github.linagora.linid.im.plugin.task;
+

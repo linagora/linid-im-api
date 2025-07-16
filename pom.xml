@@ -8,12 +8,10 @@
     <version>3.5.0</version>
     <relativePath></relativePath>
   </parent>
-  <groupId>org.linagora.linid</groupId>
-  <artifactId>directory-manager-api</artifactId>
+  <groupId>io.github.linagora.linid.im</groupId>
+  <artifactId>linid-im-api</artifactId>
   <version>0.3.0</version>
-  <name>dm-api</name>
-  <description>dm-api</description>
-  <url></url>
+  <name>identity-manager-api</name>
   <licenses>
     <license>
       <name>GNU Affero General Public License v3.0</name>
@@ -70,9 +68,10 @@
       <version>3.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.linagora.linid</groupId>
-      <artifactId>dm-api-core</artifactId>
-      <version>0.6.0</version>
+      <groupId>io.github.linagora.linid.im</groupId>
+      <artifactId>linid-im-api-corelib</artifactId>
+      <version>0.7.2</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -186,10 +185,10 @@
         </dependencies>
         <configuration>
           <targetClasses>
-            <param>org.linagora.linid.dmapi.*</param>
+            <param>io.github.linagora.linid.im.*</param>
           </targetClasses>
           <targetTests>
-            <param>org.linagora.linid.dmapi.*</param>
+            <param>io.github.linagora.linid.im.*</param>
           </targetTests>
           <mutators>
             <mutator>STRONGER</mutator>

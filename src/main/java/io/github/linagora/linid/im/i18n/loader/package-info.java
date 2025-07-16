@@ -24,3 +24,13 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Provides source loaders for retrieving internationalization (i18n) data from various locations such as plugins, external files,
+ * or internal resources.
+ *
+ * <p>
+ * Each implementation of {@link io.github.linagora.linid.im.i18n.loader.I18nSourceLoader} is responsible for parsing a specific type
+ * of source and returning structured translation data.
+ */
+package io.github.linagora.linid.im.i18n.loader;
+

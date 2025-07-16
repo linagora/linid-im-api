@@ -24,3 +24,20 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Provides the configuration handling for plugins in the LinID Identity Manager API.
+ *
+ * <p>This package includes services and DTOs to load and manage plugin configuration
+ * from a YAML file. The main responsibilities covered include:
+ * <ul>
+ *   <li>Parsing configuration files into structured Java objects</li>
+ *   <li>Providing access to entities, providers, routes, and tasks defined in the configuration</li>
+ *   <li>Watching for configuration file changes and reloading automatically</li>
+ *   <li>Internationalized error reporting</li>
+ * </ul>
+ *
+ * <p>The entry point of this package is {@link io.github.linagora.linid.im.plugin.config.PluginConfigurationServiceImpl},
+ * which implements the {@link io.github.linagora.linid.im.plugin.config.PluginConfigurationService} interface.
+ */
+package io.github.linagora.linid.im.plugin.config;
+

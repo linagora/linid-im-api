@@ -24,3 +24,65 @@
  * LinID Identity Manager software.
  */
 
+package io.github.linagora.linid.im.i18n.loader;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
+
+/**
+ * Loads i18n (internationalization) translation files from the classpath.
+ *
+ * <p>
+ * This implementation looks for JSON files in the {@code classpath*:i18n/*.json} location, where each file is expected to be
+ * named after the language code (e.g., {@code en.json}, {@code fr.json}) and to contain a flat map of key/value translation
+ * pairs.
+ *
+ * <p>
+ * This loader supports the type {@code "internal"}.
+ */
+@Slf4j
+@Component
+public class ClasspathI18nLoader implements I18nSourceLoader {
+
+  /**
+   * Resolver used to scan and load resources from the classpath.
+   */
+  private final PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+
+  @Override
+  public boolean supports(@NonNull String type) {
+    return "internal".equals(type);
+  }
+
+  @Override
+  public Map<String, Map<String, String>> load() {
+    Map<String, Map<String, String>> result = new HashMap<>();
+
+    try {
+      for (var resource : resolver.getResources("classpath*:i18n/*.json")) {
+        var lang = Objects.requireNonNull(resource.getFilename())
+            .replace(".json", "");
+        var translations = new ObjectMapper().readValue(
+            resource.getInputStream(),
+            new TypeReference<Map<String, String>>() {
+            }
+        );
+
+        result.put(lang, translations);
+      }
+
+      return result;
+    } catch (Exception e) {
+      log.error("Error during loading translation from classpath", e);
+    }
+
+    return result;
+  }
+}
