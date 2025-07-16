@@ -24,3 +24,49 @@
  * LinID Identity Manager software.
  */
 
+package io.github.linagora.linid.im.plugin.authorization;
+
+import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authorization.DenyAllAuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.plugin.core.PluginRegistry;
+import org.springframework.stereotype.Component;
+
+/**
+ * Default implementation of {@link AuthorizationFactory}.
+ *
+ * <p>
+ * This factory retrieves the appropriate {@link AuthorizationPlugin} instance based on the authorization configuration loaded by
+ * {@link PluginConfigurationService}. If no configuration is present or the plugin type is unknown, it returns a
+ * {@link DenyAllAuthorizationPlugin}.
+ */
+@Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+public class AuthorizationFactoryImpl implements AuthorizationFactory {
+
+  /**
+   * Registry of available {@link AuthorizationPlugin} implementations, indexed by their type identifier.
+   */
+  private final PluginRegistry<AuthorizationPlugin, String> pluginRegistry;
+
+  /**
+   * Service responsible for loading the authorization plugin configuration.
+   */
+  private final PluginConfigurationService pluginConfigurationService;
+
+  @Override
+  public AuthorizationPlugin getAuthorizationPlugin() {
+    var opt = pluginConfigurationService.getAuthorizationConfiguration();
+
+    if (opt.isEmpty()) {
+      return new DenyAllAuthorizationPlugin();
+    }
+
+    var configuration = opt.get();
+
+    return pluginRegistry.getPluginOrDefaultFor(configuration.getType(), new DenyAllAuthorizationPlugin());
+  }
+}

@@ -24,3 +24,8 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Contains the model and related interfaces for representing dynamic entities within the LinID Identity Manager.
+ */
+package io.github.linagora.linid.im.plugin.entity;
+

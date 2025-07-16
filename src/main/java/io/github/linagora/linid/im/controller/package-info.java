@@ -24,3 +24,12 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Provides the REST API controllers for the Identity Manager API application.
+ *
+ * <p>
+ * This package contains the entry points that expose application features over HTTP using Spring's {@code @RestController}
+ * components. Controllers handle client requests, delegate business logic to services, and return appropriate responses.
+ */
+package io.github.linagora.linid.im.controller;
+

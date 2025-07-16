@@ -24,3 +24,22 @@
  * LinID Identity Manager software.
  */
 
+package io.github.linagora.linid.im.plugin.config;
+
+import java.nio.file.Path;
+
+/**
+ * Functional interface responsible for watching a configuration file and triggering a callback when the file changes.
+ */
+@FunctionalInterface
+public interface PluginConfigurationWatcher {
+
+  /**
+   * Starts watching the given configuration file path. When a change is detected, the provided {@code onChange} callback is
+   * executed.
+   *
+   * @param configPath the path to the configuration file to watch
+   * @param onChange the callback to invoke when the configuration file changes
+   */
+  void watch(Path configPath, Runnable onChange);
+}

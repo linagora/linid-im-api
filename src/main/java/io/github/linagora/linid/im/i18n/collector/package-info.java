@@ -24,3 +24,12 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Contains collector utilities used to aggregate and merge i18n data from multiple sources.
+ *
+ * <p>
+ * This package is responsible for combining different sets of translations into a unified structure that can be consumed by the
+ * i18n service.
+ */
+package io.github.linagora.linid.im.i18n.collector;
+

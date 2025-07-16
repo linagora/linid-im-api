@@ -24,3 +24,8 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * This package contains components related to the management of provider plugins.
+ */
+package io.github.linagora.linid.im.plugin.provider;
+

@@ -24,3 +24,22 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Provides support for dynamic routing through pluggable {@link io.github.linagora.linid.im.plugin.route.RoutePlugin}
+ * implementations.
+ *
+ * <p>
+ * This package contains classes responsible for handling dynamic HTTP routing logic based on user-defined plugin implementations.
+ * Each {@code RoutePlugin} can be matched against an HTTP request URI and method, and can be executed with a corresponding
+ * configuration.
+ *
+ * <p>
+ * Typical usage includes:
+ * <ul>
+ *   <li>Registering route plugins via a {@link org.springframework.plugin.core.PluginRegistry}</li>
+ *   <li>Dynamically selecting and executing a plugin based on the incoming HTTP request</li>
+ * </ul>
+ * </p>
+ */
+package io.github.linagora.linid.im.plugin.route;
+

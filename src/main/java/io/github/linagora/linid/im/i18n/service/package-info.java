@@ -24,3 +24,12 @@
  * LinID Identity Manager software.
  */
 
+/**
+ * Contains the core service interfaces and implementations for handling internationalization (i18n) logic.
+ *
+ * <p>
+ * This includes loading, merging, and resolving translations across different sources and supporting language-specific message
+ * rendering.
+ */
+package io.github.linagora.linid.im.i18n.service;
+
