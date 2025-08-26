@@ -73,21 +73,19 @@ public class ValidationEngineImpl implements ValidationEngine {
 
     dynamicEntity.getConfiguration()
         .getAttributes()
-        .forEach(attributeConfiguration -> {
-          attributeConfiguration.getValidations()
-              .stream()
-              .filter(configuration -> configuration.getPhases().contains(phase))
-              .map(this::mergeConfigurationWithGlobal)
-              .forEach(configuration -> getValidationPlugin(configuration)
-                  .validate(configuration, dynamicEntity.getAttributes()
-                      .getOrDefault(attributeConfiguration.getName(), null))
-                  .ifPresent((error) -> {
-                    error.context().put("entity", dynamicEntity.getConfiguration().getName());
-                    error.context().put("attribute", attributeConfiguration.getName());
+        .forEach(attributeConfiguration -> attributeConfiguration.getValidations()
+            .stream()
+            .filter(configuration -> configuration.getPhases().contains(phase))
+            .map(this::mergeConfigurationWithGlobal)
+            .forEach(configuration -> getValidationPlugin(configuration)
+                .validate(configuration, dynamicEntity.getAttributes()
+                    .getOrDefault(attributeConfiguration.getName(), null))
+                .ifPresent(error -> {
+                  error.context().put("entity", dynamicEntity.getConfiguration().getName());
+                  error.context().put("attribute", attributeConfiguration.getName());
 
-                    errors.add(error);
-                  }));
-        });
+                  errors.add(error);
+                })));
 
     if (!errors.isEmpty()) {
       throw new ApiException(

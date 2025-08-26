@@ -30,8 +30,11 @@ import io.github.linagora.linid.im.corelib.exception.ApiException;
 import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
 import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
+import io.github.linagora.linid.im.corelib.plugin.entity.EntityDescription;
+import io.github.linagora.linid.im.corelib.plugin.route.RouteDescription;
 import io.github.linagora.linid.im.corelib.plugin.task.TaskExecutionContext;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +72,7 @@ public class MetadataController {
    * @return an HTTP 200 response with a list of route metadata objects
    */
   @GetMapping("/routes")
-  public ResponseEntity<?> getRouteDescriptions(HttpServletRequest request) {
+  public ResponseEntity<List<RouteDescription>> getRouteDescriptions(HttpServletRequest request) {
     authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
     return ResponseEntity.ok(pluginConfigurationService.getRouteDescriptions());
   }
@@ -83,7 +86,7 @@ public class MetadataController {
    * @return an HTTP 200 response with a list of entity metadata objects
    */
   @GetMapping("/entities")
-  public ResponseEntity<?> getEntityDescriptions(HttpServletRequest request) {
+  public ResponseEntity<List<EntityDescription>> getEntityDescriptions(HttpServletRequest request) {
     authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
     return ResponseEntity.ok(pluginConfigurationService.getEntityDescriptions());
   }
@@ -98,7 +101,7 @@ public class MetadataController {
    * @return an HTTP 200 response with the metadata of the requested entity
    */
   @GetMapping("/entities/{entity}")
-  public ResponseEntity<?> getEntityDescription(@PathVariable String entity, HttpServletRequest request) {
+  public ResponseEntity<EntityDescription> getEntityDescription(@PathVariable String entity, HttpServletRequest request) {
     authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
     return ResponseEntity.ok(
         pluginConfigurationService.getEntityDescription(entity)

@@ -26,6 +26,8 @@
 
 package io.github.linagora.linid.im.plugin.config;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import io.github.linagora.linid.im.corelib.i18n.I18nService;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +39,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 @DisplayName("Test class: PluginConfigurationWatcherImpl")
-public class PluginConfigurationWatcherImplTest {
+class PluginConfigurationWatcherImplTest {
 
   @Test
   @DisplayName("Should trigger onChange when the config file is modified")
@@ -60,6 +62,6 @@ public class PluginConfigurationWatcherImplTest {
     Files.writeString(configFile, "updated");
 
     boolean triggered = latch.await(2, TimeUnit.SECONDS);
-    assert triggered : "onChange should have been triggered on file modification";
+    assertTrue(triggered);
   }
 }

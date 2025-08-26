@@ -46,7 +46,7 @@ import org.springframework.http.HttpStatus;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: I18nController")
-public class I18nControllerTest {
+class I18nControllerTest {
 
   @Mock
   private I18nService service;
@@ -59,7 +59,7 @@ public class I18nControllerTest {
 
   @Test
   @DisplayName("test getLanguages: should return valid data")
-  public void testGetLanguages() {
+  void testGetLanguages() {
     var request = Mockito.mock(HttpServletRequest.class);
 
     Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());
@@ -74,7 +74,7 @@ public class I18nControllerTest {
 
   @Test
   @DisplayName("test getTranslationFile: should return valid data")
-  public void testGetTranslationFile() {
+  void testGetTranslationFile() {
     var request = Mockito.mock(HttpServletRequest.class);
     
     Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());

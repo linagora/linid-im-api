@@ -53,7 +53,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("Test class: PluginI18nLoader")
 @ExtendWith(MockitoExtension.class)
-public class PluginI18nLoaderTest {
+class PluginI18nLoaderTest {
 
   private PluginI18nLoader loader;
 
@@ -108,7 +108,7 @@ public class PluginI18nLoaderTest {
 
   @Test
   @DisplayName("parse() should skip non-i18n entries in jar")
-  void parseShouldIgnoreNonI18nFiles() throws IOException {
+  void parseShouldIgnoreNonI18nFiles() {
     JarEntry entry = new JarEntry("META-INF/manifest.mf");
 
     JarFile mockJar = Mockito.mock(JarFile.class);
@@ -137,7 +137,7 @@ public class PluginI18nLoaderTest {
 
   @Test
   @DisplayName("load() should use pluginDirectoryPath to walk files")
-  void loadShouldUseInjectedPluginDirectoryPath() throws IOException {
+  void loadShouldUseInjectedPluginDirectoryPath() {
     Path fakeJar = Paths.get("plugins", "plugin.jar");
 
     try (MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)) {
@@ -159,7 +159,7 @@ public class PluginI18nLoaderTest {
 
   @Test
   @DisplayName("load() should handle exception while reading jar and continue")
-  void loadShouldHandleJarFileException() throws Exception {
+  void loadShouldHandleJarFileException() {
     Path fakeJarPath = Paths.get("plugins/fake-plugin.jar");
     try (
         MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class);

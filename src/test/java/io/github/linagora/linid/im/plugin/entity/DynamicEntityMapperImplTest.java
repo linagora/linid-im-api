@@ -84,11 +84,11 @@ class DynamicEntityMapperImplTest {
   void testConvertValue() {
     mapper.convertValue("String", "", false);
     Mockito.verify(conversionService, Mockito.times(1))
-        .convert(Mockito.eq(""), Mockito.eq(String.class));
+        .convert("", String.class);
 
     mapper.convertValue("String", "a", true);
     Mockito.verify(conversionService, Mockito.times(1))
-        .convert(Mockito.eq("a"), Mockito.eq(String.class));
+        .convert("a", String.class);
   }
 
   @Test

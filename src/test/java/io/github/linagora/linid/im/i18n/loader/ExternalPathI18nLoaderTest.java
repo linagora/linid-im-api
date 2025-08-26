@@ -70,7 +70,7 @@ class ExternalPathI18nLoaderTest {
 
   @Test
   @DisplayName("test load: should return translations when JSON files are present")
-  void loadShouldReturnTranslationsWhenFilesArePresent() throws IOException {
+  void loadShouldReturnTranslationsWhenFilesArePresent() {
     Path path1 = Paths.get("some/fake/path/en.json");
     Path path2 = Paths.get("some/fake/path/fr.json");
 
@@ -94,7 +94,7 @@ class ExternalPathI18nLoaderTest {
 
   @Test
   @DisplayName("load() should handle IOException and return empty result")
-  void loadShouldHandleIOExceptionAndReturnEmptyResult() throws IOException {
+  void loadShouldHandleIOExceptionAndReturnEmptyResult() {
     try (MockedStatic<Files> filesMock = Mockito.mockStatic(Files.class)) {
       filesMock.when(() -> Files.walk(Mockito.any(Path.class)))
           .thenThrow(new IOException("Simulated IO error"));

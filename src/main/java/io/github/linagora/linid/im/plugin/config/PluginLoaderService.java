@@ -394,18 +394,13 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
     pluginContext.getBeansOfType(Plugin.class).forEach((name, plugin) -> {
       boolean loaded = true;
 
-      if (plugin instanceof ProviderPlugin providerPlugin) {
-        providerPlugins.add(providerPlugin);
-      } else if (plugin instanceof RoutePlugin routePlugin) {
-        routePlugins.add(routePlugin);
-      } else if (plugin instanceof TaskPlugin taskPlugin) {
-        taskPlugins.add(taskPlugin);
-      } else if (plugin instanceof ValidationPlugin validationPlugin) {
-        validationPlugins.add(validationPlugin);
-      } else if (plugin instanceof AuthorizationPlugin authorizationPlugin) {
-        authorizationPlugins.add(authorizationPlugin);
-      } else {
-        loaded = false;
+      switch (plugin) {
+        case ProviderPlugin providerPlugin -> providerPlugins.add(providerPlugin);
+        case RoutePlugin routePlugin -> routePlugins.add(routePlugin);
+        case TaskPlugin taskPlugin -> taskPlugins.add(taskPlugin);
+        case ValidationPlugin validationPlugin -> validationPlugins.add(validationPlugin);
+        case AuthorizationPlugin authorizationPlugin -> authorizationPlugins.add(authorizationPlugin);
+        case null, default -> loaded = false;
       }
 
       if (loaded) {

@@ -83,6 +83,8 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
    */
   private final TaskEngine taskEngine;
 
+  private static final String ENTITY_KEYWORD = "entity";
+
   /**
    * Updates the given {@link DynamicEntity} with its associated configuration based on its name.
    *
@@ -94,7 +96,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
    */
   public void updateEntityConfiguration(DynamicEntity entity, String entityName) {
     var configuration = configurationService.getEntityConfiguration(entityName)
-        .orElseThrow(() -> new ApiException(404, I18nMessage.of("error.entity.unknown", Map.of("entity",
+        .orElseThrow(() -> new ApiException(404, I18nMessage.of("error.entity.unknown", Map.of(ENTITY_KEYWORD,
             entityName))));
 
     entity.setConfiguration(configuration);
@@ -300,7 +302,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     return providerFactory.getProviderByName(entity.getConfiguration().getProvider())
         .orElseThrow(() -> new ApiException(500, I18nMessage.of("error.provider.unknown",
             Map.of(
-                "entity", entity.getConfiguration().getName(),
+                ENTITY_KEYWORD, entity.getConfiguration().getName(),
                 "provider", entity.getConfiguration().getProvider())
         )));
   }
@@ -312,11 +314,11 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
    * @return the {@link ProviderConfiguration}
    * @throws ApiException if the provider configuration is not found
    */
-  public ProviderConfiguration getProviderConfiguration(DynamicEntity entity) {
+  public ProviderConfiguration   getProviderConfiguration(DynamicEntity entity) {
     return configurationService.getProviderConfiguration(entity.getConfiguration().getProvider())
         .orElseThrow(() -> new ApiException(500, I18nMessage.of("error.provider.unknown",
             Map.of(
-                "entity", entity.getConfiguration().getName(),
+                ENTITY_KEYWORD, entity.getConfiguration().getName(),
                 "provider", entity.getConfiguration().getProvider())
         )));
   }

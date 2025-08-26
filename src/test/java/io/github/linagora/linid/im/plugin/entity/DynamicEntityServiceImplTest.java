@@ -56,7 +56,7 @@ import org.springframework.util.MultiValueMap;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: DynamicEntityServiceImpl")
-public class DynamicEntityServiceImplTest {
+class DynamicEntityServiceImplTest {
   @Mock
   private ProviderFactory providerFactory;
   @Mock
@@ -73,7 +73,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test handleCreate: should call valid services with valid values")
-  public void testHandleCreate() {
+  void testHandleCreate() {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
@@ -115,7 +115,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test handleUpdate: should call valid services with valid values")
-  public void testHandleUpdate() {
+  void testHandleUpdate() {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
@@ -159,7 +159,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test handlePatch: should call valid services with valid values")
-  public void testHandlePatch() {
+  void testHandlePatch() {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
@@ -203,7 +203,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test handleDelete: should call valid services with valid values")
-  public void testHandleDelete() {
+  void testHandleDelete() {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
@@ -247,7 +247,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test handleFindById: should call valid services with valid values")
-  public void testHandleFindById() {
+  void testHandleFindById() {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
@@ -291,7 +291,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test handleFindAll: should call valid services with valid values")
-  public void testHandleFindAll() {
+  void testHandleFindAll() {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
@@ -335,11 +335,13 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test updateEntityConfiguration: should throw exception without configuration")
-  public void testUpdateEntityConfiguration() {
+  void testUpdateEntityConfiguration() {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.empty());
 
+    var entity = new DynamicEntity();
+
     ApiException ex =
-        assertThrows(ApiException.class, () -> service.updateEntityConfiguration(new DynamicEntity(), "test"));
+        assertThrows(ApiException.class, () -> service.updateEntityConfiguration(entity, "test"));
     assertEquals("error.entity.unknown", ex.getError().key());
     assertEquals(Map.of("entity", "test"), ex.getError().context());
     assertEquals(404, ex.getStatusCode());
@@ -347,7 +349,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test getProvider: should throw exception without provider")
-  public void testGetProvider() {
+  void testGetProvider() {
     Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.empty());
 
     var entityConfiguration = new EntityConfiguration();
@@ -364,7 +366,7 @@ public class DynamicEntityServiceImplTest {
 
   @Test
   @DisplayName("test getProviderConfiguration: should throw exception without configuration")
-  public void testGetProviderConfiguration() {
+  void testGetProviderConfiguration() {
     Mockito.when(configurationService.getProviderConfiguration(Mockito.anyString())).thenReturn(Optional.empty());
 
     var entityConfiguration = new EntityConfiguration();

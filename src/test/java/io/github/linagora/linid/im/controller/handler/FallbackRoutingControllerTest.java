@@ -46,7 +46,7 @@ import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: FallbackRoutingController")
-public class FallbackRoutingControllerTest {
+class FallbackRoutingControllerTest {
   @Mock
   private DynamicRoutingService dynamicRoutingService;
   @Mock
