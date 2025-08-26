@@ -51,7 +51,7 @@ import org.springframework.util.MultiValueMap;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: GenericController")
-public class GenericControllerTest {
+class GenericControllerTest {
 
   @Mock
   private DynamicEntityService service;
@@ -64,7 +64,7 @@ public class GenericControllerTest {
 
   @Test
   @DisplayName("test getStatus: should return valid status")
-  public void testGetStatus() {
+  void testGetStatus() {
     assertEquals(200, controller.getStatus(Page.empty()));
     assertEquals(200, controller.getStatus(new PageImpl<>(List.of(), PageRequest.of(0, 1), 1)));
     assertEquals(206, controller.getStatus(new PageImpl<>(List.of(), PageRequest.of(0, 1), 2)));
@@ -72,7 +72,7 @@ public class GenericControllerTest {
 
   @Test
   @DisplayName("test createEntity: should return CREATED status and call service")
-  public void testCreateEntity() {
+  void testCreateEntity() {
     var request = Mockito.mock(HttpServletRequest.class);
     Map<String, Object> requestBody = Map.of("field", "value");
     DynamicEntity expected = new DynamicEntity();
@@ -88,7 +88,7 @@ public class GenericControllerTest {
 
   @Test
   @DisplayName("test getEntities: should return OK status and call service")
-  public void testGetEntities() {
+  void testGetEntities() {
     var request = Mockito.mock(HttpServletRequest.class);
     Page<DynamicEntity> expected = Page.empty();
     Mockito.when(service.handleFindAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
@@ -108,7 +108,7 @@ public class GenericControllerTest {
 
   @Test
   @DisplayName("test getEntityById: should return OK status and call service")
-  public void testGetEntityById() {
+  void testGetEntityById() {
     var request = Mockito.mock(HttpServletRequest.class);
     var expected = new DynamicEntity();
     Mockito.when(service.handleFindById(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(expected);
@@ -127,7 +127,7 @@ public class GenericControllerTest {
 
   @Test
   @DisplayName("test putEntity: should return OK status and call service")
-  public void testPutEntity() {
+  void testPutEntity() {
     var request = Mockito.mock(HttpServletRequest.class);
     Map<String, Object> requestBody = Map.of("field", "value");
     var expected = new DynamicEntity();
@@ -143,7 +143,7 @@ public class GenericControllerTest {
 
   @Test
   @DisplayName("test patchEntity: should return OK status and call service")
-  public void testPatchEntity() {
+  void testPatchEntity() {
     var request = Mockito.mock(HttpServletRequest.class);
     Map<String, Object> requestBody = Map.of("field", "value");
     var expected = new DynamicEntity();
@@ -159,7 +159,7 @@ public class GenericControllerTest {
 
   @Test
   @DisplayName("test deleteEntity: should return NO_CONTENT status and call service")
-  public void testDeleteEntity() {
+  void testDeleteEntity() {
     var request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(service.handleDelete(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 

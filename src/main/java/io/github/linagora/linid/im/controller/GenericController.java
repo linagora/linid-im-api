@@ -94,7 +94,7 @@ public class GenericController {
    * @return a ResponseEntity containing the created entity and HTTP 201 status
    */
   @PostMapping
-  public ResponseEntity<?> createEntity(@PathVariable String entity,
+  public ResponseEntity<Map<String, Object>> createEntity(@PathVariable String entity,
                                         @RequestBody Map<String, Object> body,
                                         HttpServletRequest request) {
     var dynamicEntity = service.handleCreate(request, entity, body);
@@ -112,7 +112,7 @@ public class GenericController {
    * @return a ResponseEntity containing the page of entities and HTTP status 200 or 206
    */
   @GetMapping()
-  public ResponseEntity<?> getEntities(@PathVariable String entity,
+  public ResponseEntity<Page<Map<String, Object>>> getEntities(@PathVariable String entity,
                                        @RequestParam MultiValueMap<String, String> filters,
                                        Pageable pageable,
                                        HttpServletRequest request) {
@@ -132,7 +132,7 @@ public class GenericController {
    * @return a ResponseEntity containing the entity and HTTP status 200
    */
   @GetMapping("/{id}")
-  public ResponseEntity<?> getEntityById(@PathVariable String entity, @PathVariable String id,
+  public ResponseEntity<Map<String, Object>> getEntityById(@PathVariable String entity, @PathVariable String id,
                                          HttpServletRequest request) {
     var dynamicEntity = service.handleFindById(request, entity, id);
     return ResponseEntity.ok(mapper.apply(dynamicEntity));
@@ -147,7 +147,7 @@ public class GenericController {
    * @return a ResponseEntity containing the updated entity and HTTP status 200
    */
   @PutMapping("/{id}")
-  public ResponseEntity<?> putEntity(@PathVariable String entity, @PathVariable String id,
+  public ResponseEntity<Map<String, Object>> putEntity(@PathVariable String entity, @PathVariable String id,
                                      @RequestBody Map<String, Object> body,
                                      HttpServletRequest request) {
     var dynamicEntity = service.handleUpdate(request, entity, id, body);
@@ -163,7 +163,7 @@ public class GenericController {
    * @return a ResponseEntity containing the patched entity and HTTP status 200
    */
   @PatchMapping("/{id}")
-  public ResponseEntity<?> patchEntity(@PathVariable String entity,
+  public ResponseEntity<Map<String, Object>> patchEntity(@PathVariable String entity,
                                        @PathVariable String id,
                                        @RequestBody Map<String, Object> body,
                                        HttpServletRequest request) {
@@ -179,7 +179,7 @@ public class GenericController {
    * @return a ResponseEntity with HTTP status 204 (No Content)
    */
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteEntity(@PathVariable String entity, @PathVariable String id,
+  public ResponseEntity<Void> deleteEntity(@PathVariable String entity, @PathVariable String id,
                                         HttpServletRequest request) {
     if (!service.handleDelete(request, entity, id)) {
       throw new ApiException(404, I18nMessage.of(

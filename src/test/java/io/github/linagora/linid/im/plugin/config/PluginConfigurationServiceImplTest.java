@@ -57,7 +57,7 @@ import org.mockito.Mockito;
 import org.springframework.plugin.core.PluginRegistry;
 
 @DisplayName("Test class: PluginConfigurationServiceImpl")
-public class PluginConfigurationServiceImplTest {
+class PluginConfigurationServiceImplTest {
 
   private PluginConfigurationServiceImpl service;
   private PluginConfigurationWatcher watcher;
@@ -66,7 +66,7 @@ public class PluginConfigurationServiceImplTest {
   private String testConfigFilePath;
 
   @BeforeEach
-  public void setUp() throws Exception {
+  void setUp() throws Exception {
     watcher = Mockito.mock(PluginConfigurationWatcher.class);
     routeRegistry = Mockito.mock(PluginRegistry.class);
     mockRoutePlugin = Mockito.mock(RoutePlugin.class);
@@ -133,7 +133,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldInitializeAndRegisterWatcher() {
+  void shouldInitializeAndRegisterWatcher() {
     service.init();
 
     Mockito.verify(watcher, Mockito.times(1))
@@ -146,7 +146,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnEntityByName() {
+  void shouldReturnEntityByName() {
     injectRootConfiguration(buildTestRootConfiguration());
     Optional<EntityConfiguration> entity = service.getEntityConfiguration("users");
     assertTrue(entity.isPresent());
@@ -154,7 +154,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnProviderByName() {
+  void shouldReturnProviderByName() {
     injectRootConfiguration(buildTestRootConfiguration());
     Optional<ProviderConfiguration> provider = service.getProviderConfiguration("ldapProvider");
     assertTrue(provider.isPresent());
@@ -162,7 +162,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnRouteConfigurations() {
+  void shouldReturnRouteConfigurations() {
     injectRootConfiguration(buildTestRootConfiguration());
     List<RouteConfiguration> routes = service.getRoutesConfiguration();
     assertEquals(1, routes.size());
@@ -170,7 +170,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnTaskByName() {
+  void shouldReturnTaskByName() {
     injectRootConfiguration(buildTestRootConfiguration());
     Optional<TaskConfiguration> task = service.getTaskConfiguration("syncTask");
     assertTrue(task.isPresent());
@@ -178,7 +178,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnValidationByName() {
+  void shouldReturnValidationByName() {
     injectRootConfiguration(buildTestRootConfiguration());
     Optional<ValidationConfiguration> validation = service.getValidationConfiguration("validation");
     assertTrue(validation.isPresent());
@@ -186,7 +186,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldLoadConfigurationSuccessfully() {
+  void shouldLoadConfigurationSuccessfully() {
     RootConfiguration config = service.loadConfiguration();
     assertNotNull(config, "Root configuration should not be null");
 
@@ -204,7 +204,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnEmptyWhenConfigIsNull() {
+  void shouldReturnEmptyWhenConfigIsNull() {
     Optional<EntityConfiguration> entity = service.getEntityConfiguration("test");
     assertTrue(entity.isEmpty());
 
@@ -220,7 +220,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnRouteDescriptionsIncludingStaticAndDynamicRoutes() {
+  void shouldReturnRouteDescriptionsIncludingStaticAndDynamicRoutes() {
     EntityConfiguration entity = new EntityConfiguration();
     entity.setName("User");
     entity.setRoute("users");
@@ -242,7 +242,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnExcludeDisabledRoutes() {
+  void shouldReturnExcludeDisabledRoutes() {
     EntityConfiguration entity = new EntityConfiguration();
     entity.setName("User");
     entity.setRoute("users");
@@ -265,7 +265,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnEntityDescriptionsFromConfiguration() {
+  void shouldReturnEntityDescriptionsFromConfiguration() {
     AttributeConfiguration attr = new AttributeConfiguration();
     attr.setName("uid");
     attr.setType("string");
@@ -298,7 +298,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnEntityDescriptionByName() {
+  void shouldReturnEntityDescriptionByName() {
     AttributeConfiguration attr = new AttributeConfiguration();
     attr.setName("email");
     attr.setType("string");
@@ -329,7 +329,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnAuthorizationConfigurationIfPresent() {
+  void shouldReturnAuthorizationConfigurationIfPresent() {
     AuthorizationConfiguration authConfig = new AuthorizationConfiguration();
     authConfig.setType("mockAuth");
 
@@ -344,7 +344,7 @@ public class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  public void shouldReturnEmptyIfAuthorizationConfigAbsent() {
+  void shouldReturnEmptyIfAuthorizationConfigAbsent() {
     injectRootConfiguration(new RootConfiguration());
     Optional<AuthorizationConfiguration> result = service.getAuthorizationConfiguration();
     assertTrue(result.isEmpty());

@@ -43,12 +43,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: I18nServiceImpl")
-public class I18nServiceImplTest {
+class I18nServiceImplTest {
 
   private I18nServiceImpl service;
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     service = new I18nServiceImpl(
         List.of("plugin", "external", "internal"),
         List.of(
@@ -61,14 +61,14 @@ public class I18nServiceImplTest {
 
   @Test
   @DisplayName("test getLanguages: should return all languages")
-  public void testGetLanguages() {
+  void testGetLanguages() {
     service.run();
     assertEquals(List.of("en", "fr", "es"), service.getLanguages());
   }
 
   @Test
   @DisplayName("test getTranslations: should return all translations on valid language")
-  public void testGetTranslationsValidLanguage() {
+  void testGetTranslationsValidLanguage() {
     service.run();
     assertEquals(
         Map.of(
@@ -85,7 +85,7 @@ public class I18nServiceImplTest {
 
   @Test
   @DisplayName("test getTranslations: should return empty translations on invalid language")
-  public void testGetTranslationsInvalidLanguage() {
+  void testGetTranslationsInvalidLanguage() {
     service.run();
     assertEquals(
         Map.of(),
@@ -95,28 +95,28 @@ public class I18nServiceImplTest {
 
   @Test
   @DisplayName("test translate: should translate in en by default")
-  public void testTranslateDefault() {
+  void testTranslateDefault() {
     service.run();
     assertEquals("test-en", service.translate(I18nMessage.of("plugin")));
   }
 
   @Test
   @DisplayName("test translate: should translate in wanted language")
-  public void testTranslate() {
+  void testTranslate() {
     service.run();
     assertEquals("test-fr", service.translate("fr", I18nMessage.of("plugin")));
   }
 
   @Test
   @DisplayName("test translate: should return error message on invalid key")
-  public void testTranslateInvalidKey() {
+  void testTranslateInvalidKey() {
     service.run();
     assertEquals("Unknown key \"bad\" for language \"fr\".", service.translate("fr", I18nMessage.of("bad")));
   }
 
   @Test
   @DisplayName("test translate: should use context")
-  public void testTranslateWithContext() {
+  void testTranslateWithContext() {
     service.run();
     assertEquals("fr - test", service.translate("fr", I18nMessage.of("test")));
     assertEquals("yolo fr", service.translate("fr", I18nMessage.of("context", Map.of("value", "yolo"))));
@@ -124,7 +124,7 @@ public class I18nServiceImplTest {
 
   @Test
   @DisplayName("test run: should organise translation from order")
-  public void testRun() {
+  void testRun() {
     service = new I18nServiceImpl(
         List.of("external", "internal", "plugin"),
         List.of(

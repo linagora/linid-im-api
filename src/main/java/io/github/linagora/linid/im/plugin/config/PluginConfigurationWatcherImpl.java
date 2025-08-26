@@ -29,6 +29,7 @@ package io.github.linagora.linid.im.plugin.config;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
 import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
 
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.WatchEvent;
@@ -79,8 +80,9 @@ public class PluginConfigurationWatcherImpl implements PluginConfigurationWatche
           }
           key.reset();
         }
-      } catch (Exception e) {
+      } catch (InterruptedException | IOException e) {
         log.error("Watcher thread failed for config path: {}", configPath, e);
+        Thread.currentThread().interrupt();
       }
     });
 

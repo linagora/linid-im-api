@@ -52,7 +52,7 @@ import org.springframework.plugin.core.PluginRegistry;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: TaskEngineImpl")
-public class TaskEngineImplTest {
+class TaskEngineImplTest {
 
   @Mock
   private PluginRegistry<TaskPlugin, String> taskRegistry;

@@ -55,7 +55,7 @@ import org.springframework.plugin.core.PluginRegistry;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: ValidationEngineImpl")
-public class ValidationEngineImplTest {
+class ValidationEngineImplTest {
 
   @Mock
   private PluginRegistry<ValidationPlugin, String> validationRegistry;

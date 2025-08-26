@@ -41,7 +41,7 @@ import org.mockito.Mockito;
 import org.springframework.plugin.core.PluginRegistry;
 
 @DisplayName("Test class: PluginRegistryConfiguration")
-public class PluginRegistryConfigurationTest {
+class PluginRegistryConfigurationTest {
 
   private PluginLoaderService pluginLoaderService;
   private PluginRegistryConfiguration configuration;

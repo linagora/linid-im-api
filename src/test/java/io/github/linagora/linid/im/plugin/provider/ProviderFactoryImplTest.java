@@ -51,7 +51,7 @@ import org.springframework.util.MultiValueMap;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: ProviderFactoryImpl")
-public class ProviderFactoryImplTest {
+class ProviderFactoryImplTest {
 
   @Mock
   private PluginRegistry<ProviderPlugin, String> providerRegistry;
@@ -61,7 +61,7 @@ public class ProviderFactoryImplTest {
 
   @Test
   @DisplayName("test ProviderFactoryImpl: should return wanted provider")
-  public void testProviderFactoryImpl() {
+  void testProviderFactoryImpl() {
     var provider = new SimpleProviderPlugin();
     Mockito.when(providerRegistry.getPlugins()).thenReturn(List.of(provider));
 
@@ -73,7 +73,7 @@ public class ProviderFactoryImplTest {
 
   @Test
   @DisplayName("test ProviderFactoryImpl: should return empty optional")
-  public void testProviderFactoryImplEmpty() {
+  void testProviderFactoryImplEmpty() {
     var provider = new SimpleProviderPlugin();
     Mockito.when(providerRegistry.getPlugins()).thenReturn(List.of(provider));
 

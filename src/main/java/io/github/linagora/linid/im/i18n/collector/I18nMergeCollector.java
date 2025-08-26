@@ -39,6 +39,9 @@ import java.util.stream.Collector;
  * context.
  */
 public class I18nMergeCollector {
+
+  private I18nMergeCollector() {}
+
   /**
    * Returns a {@link java.util.stream.Collector} that merges multiple {@code Map<String, Map<String, String>>} into a single
    * aggregated map.

@@ -43,7 +43,7 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @DisplayName("Test class: ClasspathI18nLoader")
-public class ClasspathI18nLoaderTest {
+class ClasspathI18nLoaderTest {
   private final ClasspathI18nLoader loader = new ClasspathI18nLoader();
   private final PathMatchingResourcePatternResolver mockedResolver = Mockito.mock(PathMatchingResourcePatternResolver.class);
 

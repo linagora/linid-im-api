@@ -93,7 +93,7 @@ class MetadataControllerTest {
   }
 
   @Test
-  void shouldReturnEntityDescriptionByName() throws Exception {
+  void shouldReturnEntityDescriptionByName() {
     var request = Mockito.mock(HttpServletRequest.class);
     var entity = new EntityDescription("test", List.of());
     Mockito.when(pluginConfigurationService.getEntityDescription(Mockito.any())).thenReturn(Optional.of(entity));
@@ -106,7 +106,7 @@ class MetadataControllerTest {
   }
 
   @Test
-  void shouldReturn404WhenEntityNotFound() throws Exception {
+  void shouldReturn404WhenEntityNotFound() {
     var request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(pluginConfigurationService.getEntityDescription(Mockito.any())).thenReturn(Optional.empty());
 

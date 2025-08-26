@@ -52,7 +52,7 @@ import org.springframework.plugin.core.PluginRegistry;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Test class: DynamicRoutingServiceImpl")
-public class DynamicRoutingServiceImplTest {
+class DynamicRoutingServiceImplTest {
   @Mock
   private PluginRegistry<RoutePlugin, String> routeRegistry;
   @Mock
@@ -63,7 +63,7 @@ public class DynamicRoutingServiceImplTest {
 
   @Test
   @DisplayName("test route: should throw error on unknown route")
-  public void testRouteUnknown() {
+  void testRouteUnknown() {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
 
     Mockito.when(request.getRequestURI()).thenReturn("/unknown");
@@ -87,7 +87,7 @@ public class DynamicRoutingServiceImplTest {
 
   @Test
   @DisplayName("test route: should execute route with configuration")
-  public void testRouteWithConfiguration() {
+  void testRouteWithConfiguration() {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     RouteConfiguration configuration = new RouteConfiguration();
     configuration.setName("test");
@@ -107,7 +107,7 @@ public class DynamicRoutingServiceImplTest {
 
   @Test
   @DisplayName("test route: should execute route without configuration")
-  public void testRouteWithoutConfiguration() {
+  void testRouteWithoutConfiguration() {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     RouteConfiguration configuration = new RouteConfiguration();
     configuration.setName("none");
