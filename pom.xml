@@ -10,7 +10,7 @@
   </parent>
   <groupId>io.github.linagora.linid.im</groupId>
   <artifactId>linid-im-api</artifactId>
-  <version>0.3.0</version>
+  <version>0.1.0</version>
   <name>identity-manager-api</name>
   <licenses>
     <license>
@@ -33,18 +33,17 @@
     <url>https://github.com/linagora/linid-im-api</url>
   </scm>
   <properties>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-    <java.version>21</java.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring-boot.version>3.5.0</spring-boot.version>
-    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-    <sonar.projectKey>linagora_linid-im-api</sonar.projectKey>
-    <sonar.projectName>linid-im-api</sonar.projectName>
-    <sonar.organization>linagora-sonarcube-255</sonar.organization>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
     <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <sonar.projectKey>linagora_linid-im-api</sonar.projectKey>
+    <sonar.projectName>linid-im-api</sonar.projectName>
+    <java.version>21</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sonar.organization>linagora-sonarcube-255</sonar.organization>
+    <spring-boot.version>3.5.0</spring-boot.version>
   </properties>
   <dependencies>
     <dependency>
@@ -231,7 +230,6 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>3.2.7</version>
         <executions>
