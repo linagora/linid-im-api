@@ -1,5 +1,19 @@
 # linid-im-api
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=alert_status)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=reliability_rating)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=sqale_rating)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=security_rating)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=code_smells)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=bugs)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=vulnerabilities)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=sqale_index)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=ncloc)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=coverage)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=linagora_linid-im-api&metric=duplicated_lines_density)](https://sonarcloud.io/summary/overall?id=linagora_linid-im-api)
+
 LinID Identity Manager API (linid-im-api) provides a plugin-based, dynamic-entity REST service with external configuration,
 plugins, and translations.
 
