@@ -31,7 +31,7 @@
  * including task execution, validation, and routing.
  *
  * <p>Plugins are resolved dynamically at runtime using the Spring PluginRegistry and configured via
- * {@link io.github.linagora.linid.im.plugin.config.PluginConfigurationService}.
+ * {@link io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService}.
  */
 package io.github.linagora.linid.im.plugin;
 

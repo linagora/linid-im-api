@@ -37,7 +37,7 @@
  * </ul>
  *
  * <p>The entry point of this package is {@link io.github.linagora.linid.im.plugin.config.PluginConfigurationServiceImpl},
- * which implements the {@link io.github.linagora.linid.im.plugin.config.PluginConfigurationService} interface.
+ * which implements the {@link io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService} interface.
  */
 package io.github.linagora.linid.im.plugin.config;
 
