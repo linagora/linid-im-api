@@ -223,6 +223,93 @@ class ValidationEngineImplTest {
     assertFalse(errors.isEmpty());
   }
 
+  @Test
+  @DisplayName("test validateAttribute: should not throw when validation succeeds")
+  void testValidateAttributeShouldNotThrow() {
+    var plugin = Mockito.spy(new DummyPlugin());
+
+    var config = new ValidationConfiguration();
+    config.setName("val1");
+    config.setType("type1");
+
+    var attrConfig = new AttributeConfiguration();
+    attrConfig.setName("email");
+    attrConfig.setValidations(List.of(config));
+
+    var entityConfig = new EntityConfiguration();
+    entityConfig.setName("users");
+    entityConfig.setAttributes(List.of(attrConfig));
+
+    var entity = Mockito.mock(DynamicEntity.class);
+    Mockito.when(entity.getConfiguration()).thenReturn(entityConfig);
+
+    Mockito.when(configurationService.getValidationConfiguration("val1")).thenReturn(Optional.empty());
+    Mockito.when(validationRegistry.getPlugins()).thenReturn(List.of(plugin));
+
+    assertDoesNotThrow(() -> validationEngine.validateAttribute(entity, "email", "a@b.com"));
+  }
+
+  @Test
+  @DisplayName("test validateAttribute: should throw 404 when attribute does not exist")
+  void testValidateAttributeShouldThrowWhenAttributeUnknown() {
+    var entityConfig = new EntityConfiguration();
+    entityConfig.setName("users");
+    entityConfig.setAttributes(List.of());
+
+    var entity = Mockito.mock(DynamicEntity.class);
+    Mockito.when(entity.getConfiguration()).thenReturn(entityConfig);
+
+    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "a@b.com"));
+    assertEquals(404, ex.getStatusCode());
+    assertEquals("error.attribute.unknown", ex.getError().key());
+    assertEquals("users", ex.getError().context().get("entity"));
+    assertEquals("email", ex.getError().context().get("attribute"));
+  }
+
+  @Test
+  @DisplayName("test validateAttribute: should throw 400 when validation fails")
+  void testValidateAttributeShouldThrowWhenInvalid() {
+    var plugin = Mockito.spy(new DummyPlugin() {
+      @Override
+      public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value) {
+        return Optional.of(I18nMessage.of("error.test", Map.of("reason", "invalid")));
+      }
+    });
+
+    var config = new ValidationConfiguration();
+    config.setName("val1");
+    config.setType("type1");
+
+    var attrConfig = new AttributeConfiguration();
+    attrConfig.setName("email");
+    attrConfig.setValidations(List.of(config));
+
+    var entityConfig = new EntityConfiguration();
+    entityConfig.setName("users");
+    entityConfig.setAttributes(List.of(attrConfig));
+
+    var entity = Mockito.mock(DynamicEntity.class);
+    Mockito.when(entity.getConfiguration()).thenReturn(entityConfig);
+
+    Mockito.when(configurationService.getValidationConfiguration("val1")).thenReturn(Optional.empty());
+    Mockito.when(validationRegistry.getPlugins()).thenReturn(List.of(plugin));
+
+    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "not-an-email"));
+    assertEquals(400, ex.getStatusCode());
+    assertEquals("error.entity.attributes", ex.getError().key());
+    assertEquals("users", ex.getError().context().get("entity"));
+
+    var errors = (List<?>) ex.getDetails().get("errors");
+    assertNotNull(errors);
+    assertEquals(1, errors.size());
+
+    var error = (I18nMessage) errors.get(0);
+    assertEquals("error.test", error.key());
+    assertEquals("invalid", error.context().get("reason"));
+    assertEquals("users", error.context().get("entity"));
+    assertEquals("email", error.context().get("attribute"));
+  }
+
 
   public static class DummyPlugin implements ValidationPlugin {
     @Override

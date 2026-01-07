@@ -203,6 +203,7 @@ public class PluginConfigurationServiceImpl implements PluginConfigurationServic
 
     final String defaultRoutePattern = "/api/%s";
     final String routeWithIdPattern = "/api/%s/{id}";
+    final String validateAttributePattern = "/api/%s/validate/{attributeName}";
 
     this.root.getEntities().forEach(entity -> {
       routeDescriptions.add(
@@ -245,6 +246,16 @@ public class PluginConfigurationServiceImpl implements PluginConfigurationServic
                 entity.getRoute()),
                 entity.getName(),
                 List.of("id")
+            ));
+      }
+
+      if (!entity.getDisabledRoutes().contains("validate")) {
+        routeDescriptions.add(
+            new RouteDescription(
+                "POST",
+                String.format(validateAttributePattern, entity.getRoute()),
+                entity.getName(),
+                List.of("attributeName")
             ));
       }
     });

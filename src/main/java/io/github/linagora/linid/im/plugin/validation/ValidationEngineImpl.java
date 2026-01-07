@@ -96,6 +96,45 @@ public class ValidationEngineImpl implements ValidationEngine {
     }
   }
 
+  @Override
+  public void validateAttribute(DynamicEntity dynamicEntity, String attributeName, Object value) {
+    var attributeConfiguration = dynamicEntity.getConfiguration()
+        .getAttributes()
+        .stream()
+        .filter(attribute -> attributeName.equals(attribute.getName()))
+        .findFirst()
+        .orElseThrow(() -> new ApiException(
+            404,
+            I18nMessage.of(
+                "error.attribute.unknown",
+                Map.of(
+                    "entity", dynamicEntity.getConfiguration().getName(),
+                    "attribute", attributeName))));
+
+    List<I18nMessage> errors = new ArrayList<>();
+
+    attributeConfiguration.getValidations()
+        .stream()
+        .map(this::mergeConfigurationWithGlobal)
+        .forEach(configuration -> getValidationPlugin(configuration)
+            .validate(configuration, value)
+            .ifPresent(error -> {
+              error.context().put("entity", dynamicEntity.getConfiguration().getName());
+              error.context().put("attribute", attributeName);
+
+              errors.add(error);
+            }));
+
+    if (!errors.isEmpty()) {
+      throw new ApiException(
+          400,
+          I18nMessage.of(
+              "error.entity.attributes",
+              Map.of("entity", dynamicEntity.getConfiguration().getName())),
+          Map.of("errors", errors));
+    }
+  }
+
   /**
    * Resolves the correct {@link ValidationPlugin} for a given validation configuration.
    *

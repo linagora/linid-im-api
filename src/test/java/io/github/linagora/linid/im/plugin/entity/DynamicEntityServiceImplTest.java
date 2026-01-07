@@ -311,7 +311,10 @@ class DynamicEntityServiceImplTest {
     service.handleFindAll(request, "test", MultiValueMap.fromMultiValue(Map.of()), null);
 
     Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
-    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.any(MultiValueMap.class),
+    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(
+        Mockito.any(),
+        Mockito.any(),
+        Mockito.<MultiValueMap<String, String>>any(),
         Mockito.eq("READ"),
         Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindAll"));
@@ -379,5 +382,34 @@ class DynamicEntityServiceImplTest {
     assertEquals("error.provider.unknown", ex.getError().key());
     assertEquals(Map.of("entity", "name", "provider", "provider"), ex.getError().context());
     assertEquals(500, ex.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("test validateAttribute: should load configuration and delegate to validation engine")
+  void testValidateAttributeShouldDelegate() {
+    var entityConfiguration = new EntityConfiguration();
+    entityConfiguration.setName("users");
+
+    Mockito.when(configurationService.getEntityConfiguration("users"))
+        .thenReturn(Optional.of(entityConfiguration));
+    Mockito.doNothing().when(validationEngine).validateAttribute(Mockito.any(), Mockito.any(), Mockito.any());
+
+    service.validateAttribute("users", "email", "a@b.com");
+
+    ArgumentCaptor<DynamicEntity> entityCaptor = ArgumentCaptor.forClass(DynamicEntity.class);
+    Mockito.verify(validationEngine).validateAttribute(entityCaptor.capture(), Mockito.eq("email"), Mockito.eq("a@b.com"));
+    assertEquals(entityConfiguration, entityCaptor.getValue().getConfiguration());
+  }
+
+  @Test
+  @DisplayName("test validateAttribute: should throw when entity is unknown")
+  void testValidateAttributeShouldThrowWhenEntityUnknown() {
+    Mockito.when(configurationService.getEntityConfiguration("users")).thenReturn(Optional.empty());
+
+    ApiException ex = assertThrows(ApiException.class, () -> service.validateAttribute("users", "email", "a@b.com"));
+
+    assertEquals(404, ex.getStatusCode());
+    assertEquals("error.entity.unknown", ex.getError().key());
+    assertEquals(Map.of("entity", "users"), ex.getError().context());
   }
 }

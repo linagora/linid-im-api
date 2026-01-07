@@ -246,7 +246,7 @@ class PluginConfigurationServiceImplTest {
     EntityConfiguration entity = new EntityConfiguration();
     entity.setName("User");
     entity.setRoute("users");
-    entity.setDisabledRoutes(List.of("create", "update", "patch", "delete", "findById", "findAll"));
+    entity.setDisabledRoutes(List.of("create", "update", "patch", "delete", "findById", "findAll", "validate"));
 
     RootConfiguration root = new RootConfiguration();
     root.setEntities(List.of(entity));
