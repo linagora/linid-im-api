@@ -26,6 +26,16 @@
       <name>Vincent MOITTIE</name>
       <email>moittie.vincent@gmail.com</email>
     </developer>
+    <developer>
+      <id>christophechevalier</id>
+      <name>Christophe CHEVALIER</name>
+      <email>cchevalier@linagora.com</email>
+    </developer>
+    <developer>
+      <id>jcabannes</id>
+      <name>Jordy Cabannes</name>
+      <email>jcabannes@linagora.com</email>
+    </developer>
   </developers>
   <scm>
     <connection>scm:git:git://github.com/linagora/linid-im-api.git</connection>
@@ -33,16 +43,10 @@
     <url>https://github.com/linagora/linid-im-api</url>
   </scm>
   <properties>
-    <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-    <sonar.java.checkstyle.reportPaths>target/checkstyle-result.xml</sonar.java.checkstyle.reportPaths>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <sonar.projectKey>linagora_linid-im-api</sonar.projectKey>
-    <sonar.projectName>linid-im-api</sonar.projectName>
     <java.version>21</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <sonar.organization>linagora-sonarcube-255</sonar.organization>
     <spring-boot.version>3.5.0</spring-boot.version>
   </properties>
   <dependencies>
@@ -242,6 +246,9 @@
         </executions>
         <configuration>
           <failOnError>false</failOnError>
+          <additionalJOptions>
+            <additionalJOption>-Xdoclint:all,-missing</additionalJOption>
+          </additionalJOptions>
         </configuration>
       </plugin>
       <plugin>
