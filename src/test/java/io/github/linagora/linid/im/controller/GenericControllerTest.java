@@ -28,6 +28,10 @@ package io.github.linagora.linid.im.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntity;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntityMapper;
@@ -167,5 +171,23 @@ class GenericControllerTest {
 
     assertNotNull(response);
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("test validateAttribute: should return 204 when valid")
+  void testValidateAttributeWhenValid() {
+    var request = Mockito.mock(HttpServletRequest.class);
+    doNothing().when(service).validateAttribute(eq("users"), eq("email"), eq("a@b.com"));
+
+    ResponseEntity<Void> response = controller.validateAttribute(
+        "users",
+        "email",
+        "a@b.com",
+        request
+    );
+
+    assertNotNull(response);
+    assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    Mockito.verify(service).validateAttribute(eq("users"), eq("email"), eq("a@b.com"));
   }
 }

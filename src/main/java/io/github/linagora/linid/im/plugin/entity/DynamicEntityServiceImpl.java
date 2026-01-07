@@ -322,4 +322,12 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
                 "provider", entity.getConfiguration().getProvider())
         )));
   }
+
+  @Override
+  public void validateAttribute(String entityName, String attributeName, Object value) {
+    var entity = new DynamicEntity();
+    updateEntityConfiguration(entity, entityName);
+
+    validationEngine.validateAttribute(entity, attributeName, value);
+  }
 }

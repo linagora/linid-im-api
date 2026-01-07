@@ -190,4 +190,28 @@ public class GenericController {
 
     return ResponseEntity.noContent().build();
   }
+
+  /**
+   * Validates a single attribute value for a dynamic entity.
+   *
+   * <p>
+   * This endpoint performs validation only (no side-effects). When validation succeeds, HTTP 204 (No Content) is returned.
+   *
+   * @param entityRoute entity route (as used in configuration)
+   * @param attributeName attribute name to validate
+   * @param value request body value to validate; may be omitted, in which case the value is treated as {@code null} for
+   *     validation purposes
+   * @param request HTTP request
+   * @return 204 No Content on success; 404 if entity or attribute not found; 400 if validation fails
+   */
+  @PostMapping("/validate/{attributeName}")
+  public ResponseEntity<Void> validateAttribute(
+      @PathVariable("entity") String entityRoute,
+      @PathVariable("attributeName") String attributeName,
+      @RequestBody(required = false) Object value,
+      HttpServletRequest request) {
+    service.validateAttribute(entityRoute, attributeName, value);
+    return ResponseEntity.noContent().build();
+  }
+
 }
