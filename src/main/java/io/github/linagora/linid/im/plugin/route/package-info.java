@@ -25,7 +25,7 @@
  */
 
 /**
- * Provides support for dynamic routing through pluggable {@link io.github.linagora.linid.im.plugin.route.RoutePlugin}
+ * Provides support for dynamic routing through pluggable {@link io.github.linagora.linid.im.corelib.plugin.route.RoutePlugin}
  * implementations.
  *
  * <p>
@@ -39,7 +39,6 @@
  *   <li>Registering route plugins via a {@link org.springframework.plugin.core.PluginRegistry}</li>
  *   <li>Dynamically selecting and executing a plugin based on the incoming HTTP request</li>
  * </ul>
- * </p>
  */
 package io.github.linagora.linid.im.plugin.route;
 
