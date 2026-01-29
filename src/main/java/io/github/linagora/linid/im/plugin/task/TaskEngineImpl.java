@@ -65,7 +65,11 @@ public class TaskEngineImpl implements TaskEngine {
 
   @Override
   public void execute(DynamicEntity dynamicEntity, TaskExecutionContext context, String phase) {
-    dynamicEntity.getConfiguration().getTasks()
+    var configuration = dynamicEntity.getConfiguration();
+    if (configuration == null) {
+      return;
+    }
+    configuration.getTasks()
         .stream()
         .filter(task -> task.getPhases().contains(phase))
         .map(this::mergeConfigurationWithGlobal)

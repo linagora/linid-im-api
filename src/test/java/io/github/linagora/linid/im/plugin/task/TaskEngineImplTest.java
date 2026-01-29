@@ -210,6 +210,20 @@ class TaskEngineImplTest {
     Mockito.verifyNoInteractions(configurationService);
   }
 
+  @Test
+  @DisplayName("test execute: should not throw when configuration is null")
+  void testExecuteWithNullConfiguration() {
+    var entity = Mockito.mock(DynamicEntity.class);
+    Mockito.when(entity.getConfiguration()).thenReturn(null);
+
+    // Should not throw NullPointerException
+    taskEngine.execute(entity, new TaskExecutionContext(), "myphase");
+
+    // Verify no plugin interaction occurred
+    Mockito.verifyNoInteractions(taskRegistry);
+    Mockito.verifyNoInteractions(configurationService);
+  }
+
   public static class DummyPlugin implements TaskPlugin {
     @Override
     public boolean supports(@NonNull String type) {
