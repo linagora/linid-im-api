@@ -77,6 +77,7 @@ class DynamicEntityServiceImplTest {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
     var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
@@ -85,7 +86,7 @@ class DynamicEntityServiceImplTest {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
-    Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
+    Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
     Mockito.when(provider.create(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
@@ -119,6 +120,7 @@ class DynamicEntityServiceImplTest {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
     var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
@@ -127,7 +129,7 @@ class DynamicEntityServiceImplTest {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
-    Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
+    Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
     Mockito.when(provider.update(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
@@ -163,6 +165,7 @@ class DynamicEntityServiceImplTest {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
     var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
@@ -171,7 +174,7 @@ class DynamicEntityServiceImplTest {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
-    Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
+    Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
     Mockito.when(provider.patch(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
@@ -207,6 +210,7 @@ class DynamicEntityServiceImplTest {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
     var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
@@ -215,7 +219,7 @@ class DynamicEntityServiceImplTest {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
-    Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
+    Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
     Mockito.when(provider.delete(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
@@ -251,6 +255,7 @@ class DynamicEntityServiceImplTest {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
     var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
@@ -259,7 +264,7 @@ class DynamicEntityServiceImplTest {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
-    Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
+    Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
     Mockito.when(provider.findById(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
@@ -295,6 +300,7 @@ class DynamicEntityServiceImplTest {
     var entityConfiguration = new EntityConfiguration();
     entityConfiguration.setProvider("test");
     var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
     var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
@@ -303,7 +309,7 @@ class DynamicEntityServiceImplTest {
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
-    Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.of(provider));
+    Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
     Mockito.when(provider.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
@@ -353,18 +359,50 @@ class DynamicEntityServiceImplTest {
   @Test
   @DisplayName("test getProvider: should throw exception without provider")
   void testGetProvider() {
-    Mockito.when(providerFactory.getProviderByName(Mockito.anyString())).thenReturn(Optional.empty());
+    var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setType("http");
+
+    Mockito.when(configurationService.getProviderConfiguration("my-provider"))
+        .thenReturn(Optional.of(providerConfiguration));
+    Mockito.when(providerFactory.getProviderByType("http")).thenReturn(Optional.empty());
 
     var entityConfiguration = new EntityConfiguration();
-    entityConfiguration.setProvider("provider");
+    entityConfiguration.setProvider("my-provider");
     entityConfiguration.setName("name");
     var entity = new DynamicEntity();
     entity.setConfiguration(entityConfiguration);
 
     ApiException ex = assertThrows(ApiException.class, () -> service.getProvider(entity));
     assertEquals("error.provider.unknown", ex.getError().key());
-    assertEquals(Map.of("entity", "name", "provider", "provider"), ex.getError().context());
+    assertEquals(Map.of("entity", "name", "provider", "my-provider"), ex.getError().context());
     assertEquals(500, ex.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("test getProvider: should resolve provider by type not by name")
+  void testGetProviderShouldResolveByType() {
+    var providerConfiguration = new ProviderConfiguration();
+    providerConfiguration.setName("my-http-provider");
+    providerConfiguration.setType("http");
+
+    var provider = Mockito.mock(ProviderPlugin.class);
+
+    Mockito.when(configurationService.getProviderConfiguration("my-http-provider"))
+        .thenReturn(Optional.of(providerConfiguration));
+    Mockito.when(providerFactory.getProviderByType("http")).thenReturn(Optional.of(provider));
+
+    var entityConfiguration = new EntityConfiguration();
+    entityConfiguration.setProvider("my-http-provider");
+    entityConfiguration.setName("users");
+    var entity = new DynamicEntity();
+    entity.setConfiguration(entityConfiguration);
+
+    var result = service.getProvider(entity);
+
+    assertEquals(provider, result);
+    // Verify that getProviderByType was called with the TYPE, not the provider NAME
+    Mockito.verify(providerFactory).getProviderByType("http");
+    Mockito.verify(providerFactory, Mockito.never()).getProviderByType("my-http-provider");
   }
 
   @Test

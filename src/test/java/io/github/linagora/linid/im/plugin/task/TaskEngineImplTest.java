@@ -140,10 +140,11 @@ class TaskEngineImplTest {
   }
 
   @Test
-  @DisplayName("test getPlugin: should return plugin with valid plugin")
+  @DisplayName("test getPlugin: should return plugin matching by type")
   void testGetPluginWithValidPlugin() {
     TaskConfiguration config = new TaskConfiguration();
     config.setName("mytask");
+    config.setType("dummy-type");
 
     var plugin = new DummyPlugin();
     Mockito.when(taskRegistry.getPlugins()).thenReturn(List.of(plugin));
@@ -154,12 +155,28 @@ class TaskEngineImplTest {
   }
 
   @Test
+  @DisplayName("test getPlugin: should not match plugin by name when type differs")
+  void testGetPluginShouldMatchByTypeNotName() {
+    TaskConfiguration config = new TaskConfiguration();
+    config.setName("dummy-type"); // Name matches plugin type
+    config.setType("different-type"); // But type does not
+
+    var plugin = new DummyPlugin();
+    Mockito.when(taskRegistry.getPlugins()).thenReturn(List.of(plugin));
+
+    ApiException ex = assertThrows(ApiException.class, () -> taskEngine.getPlugin(config));
+    assertEquals("error.plugin.unknown", ex.getError().key());
+    assertEquals(Map.of("type", "different-type"), ex.getError().context());
+  }
+
+  @Test
   @DisplayName("test execute: should execute plugin")
   void testExecutePlugin() {
     var plugin = Mockito.spy(new DummyPlugin());
 
     var config = new TaskConfiguration();
     config.setName("mytask");
+    config.setType("dummy-type");
     config.setPhases(List.of("myphase"));
 
     var entityConfig = new EntityConfiguration();
@@ -176,10 +193,27 @@ class TaskEngineImplTest {
     Mockito.verify(plugin).execute(Mockito.any(), Mockito.eq(entity), Mockito.any());
   }
 
+  @Test
+  @DisplayName("test execute: should not throw when tasks list is null")
+  void testExecuteWithNullTasks() {
+    var entityConfig = new EntityConfiguration();
+    entityConfig.setTasks(null);
+
+    var entity = Mockito.mock(DynamicEntity.class);
+    Mockito.when(entity.getConfiguration()).thenReturn(entityConfig);
+
+    // Should not throw NullPointerException
+    taskEngine.execute(entity, new TaskExecutionContext(), "myphase");
+
+    // Verify no plugin interaction occurred
+    Mockito.verifyNoInteractions(taskRegistry);
+    Mockito.verifyNoInteractions(configurationService);
+  }
+
   public static class DummyPlugin implements TaskPlugin {
     @Override
-    public boolean supports(@NonNull String name) {
-      return "mytask".equals(name);
+    public boolean supports(@NonNull String type) {
+      return "dummy-type".equals(type);
     }
 
     @Override
