@@ -45,14 +45,14 @@ import org.springframework.stereotype.Component;
 public class ProviderFactoryImpl implements ProviderFactory {
   /**
    * Registry containing all available {@link ProviderPlugin} instances. Used to resolve the appropriate plugin by matching its
-   * supported name.
+   * supported type.
    */
   private final PluginRegistry<ProviderPlugin, String> providerRegistry;
 
   @Override
-  public Optional<ProviderPlugin> getProviderByName(final String name) {
+  public Optional<ProviderPlugin> getProviderByType(final String type) {
     return providerRegistry.getPlugins().stream()
-        .filter(provider -> provider.supports(name))
+        .filter(provider -> provider.supports(type))
         .findFirst();
   }
 }

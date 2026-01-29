@@ -65,7 +65,7 @@ class ProviderFactoryImplTest {
     var provider = new SimpleProviderPlugin();
     Mockito.when(providerRegistry.getPlugins()).thenReturn(List.of(provider));
 
-    var result = providerFactory.getProviderByName("test");
+    var result = providerFactory.getProviderByType("test");
     assertNotNull(result);
     assertFalse(result.isEmpty());
     assertEquals(provider, result.get());
@@ -77,7 +77,7 @@ class ProviderFactoryImplTest {
     var provider = new SimpleProviderPlugin();
     Mockito.when(providerRegistry.getPlugins()).thenReturn(List.of(provider));
 
-    var result = providerFactory.getProviderByName("bas");
+    var result = providerFactory.getProviderByType("bas");
     assertNotNull(result);
     assertTrue(result.isEmpty());
   }

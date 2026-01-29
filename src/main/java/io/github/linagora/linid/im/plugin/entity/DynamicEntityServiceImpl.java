@@ -299,7 +299,8 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
    * @throws ApiException if the provider plugin is unknown
    */
   public ProviderPlugin getProvider(DynamicEntity entity) {
-    return providerFactory.getProviderByName(entity.getConfiguration().getProvider())
+    var providerConfiguration = getProviderConfiguration(entity);
+    return providerFactory.getProviderByType(providerConfiguration.getType())
         .orElseThrow(() -> new ApiException(500, I18nMessage.of("error.provider.unknown",
             Map.of(
                 ENTITY_KEYWORD, entity.getConfiguration().getName(),

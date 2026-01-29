@@ -67,10 +67,10 @@ public class TaskEngineImpl implements TaskEngine {
   public void execute(DynamicEntity dynamicEntity, TaskExecutionContext context, String phase) {
     dynamicEntity.getConfiguration().getTasks()
         .stream()
-        .filter(configuration -> configuration.getPhases().contains(phase))
+        .filter(task -> task.getPhases().contains(phase))
         .map(this::mergeConfigurationWithGlobal)
-        .forEach(configuration -> getPlugin(configuration)
-            .execute(configuration, dynamicEntity, context));
+        .forEach(task -> getPlugin(task)
+            .execute(task, dynamicEntity, context));
   }
 
   /**
@@ -83,7 +83,7 @@ public class TaskEngineImpl implements TaskEngine {
   public TaskPlugin getPlugin(TaskConfiguration configuration) {
     return taskRegistry.getPlugins()
         .stream()
-        .filter(validationPlugin -> validationPlugin.supports(configuration.getName()))
+        .filter(taskPlugin -> taskPlugin.supports(configuration.getType()))
         .findFirst()
         .orElseThrow(() -> new ApiException(400, I18nMessage.of(
             "error.plugin.unknown",
