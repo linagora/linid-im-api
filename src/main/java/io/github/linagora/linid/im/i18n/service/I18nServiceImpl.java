@@ -26,6 +26,7 @@
 
 package io.github.linagora.linid.im.i18n.service;
 
+import io.github.linagora.linid.im.corelib.exception.ApiException;
 import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
 import io.github.linagora.linid.im.corelib.i18n.I18nService;
 import io.github.linagora.linid.im.i18n.collector.I18nMergeCollector;
@@ -89,7 +90,14 @@ public class I18nServiceImpl implements I18nService, CommandLineRunner {
 
   @Override
   public Map<String, String> getTranslations(String language) {
-    return languages.getOrDefault(language, Map.of());
+    if (languages.containsKey(language)) {
+      return languages.get(language);
+    }
+
+    throw new ApiException(404, I18nMessage.of(
+        "error.router.unknown.route",
+        Map.of("route", String.format("/i18n/%s.json", language))
+    ));
   }
 
   @Override
