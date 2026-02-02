@@ -118,7 +118,7 @@ public class FallbackRoutingController {
     body.put("errorKey", exception.getError().key());
     body.put("errorContext", exception.getError().context());
     body.put("status", exception.getStatusCode());
-    body.put("timestamp", Instant.now());
+    body.put("timestamp", Instant.now().toEpochMilli());
     body.putAll(exception.getDetails());
 
     if (exception.isNeedToBeLogged()) {
