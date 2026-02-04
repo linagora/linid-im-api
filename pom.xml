@@ -79,7 +79,7 @@
     <dependency>
       <groupId>io.github.linagora.linid.im</groupId>
       <artifactId>linid-im-api-corelib</artifactId>
-      <version>0.10.0</version>
+      <version>0.11.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
