@@ -34,6 +34,7 @@ import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
 import io.github.linagora.linid.im.corelib.i18n.I18nService;
 import io.github.linagora.linid.im.corelib.plugin.route.DynamicRoutingService;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -84,5 +85,38 @@ class FallbackRoutingControllerTest {
     assertEquals(Map.of("key", "value"), body.get("errorContext"));
     assertEquals(400, body.get("status"));
     assertNotNull(body.get("timestamp"));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  void testHandleApiException_shouldConvertI18nMessagesInDetails() {
+    var i18nError = I18nMessage.of("validation.error", Map.of("field", "email"));
+    var exception = new ApiException(
+        400,
+        I18nMessage.of("error.entity.attributes", Map.of("entity", "user")),
+        Map.of("errors", List.of(i18nError))
+    );
+    Mockito.when(i18nService.translate(Mockito.any(I18nMessage.class)))
+        .thenAnswer(invocation -> {
+          I18nMessage msg = invocation.getArgument(0);
+          return "Translated: " + msg.key();
+        });
+
+    ResponseEntity<Map<String, Object>> response = controller.handleApiException(exception);
+
+    assertNotNull(response);
+    assertEquals(400, response.getStatusCode().value());
+
+    Map<String, Object> body = response.getBody();
+    assertNotNull(body);
+
+    List<Map<String, Object>> errors = (List<Map<String, Object>>) body.get("errors");
+    assertNotNull(errors);
+    assertEquals(1, errors.size());
+
+    Map<String, Object> errorDetail = errors.get(0);
+    assertEquals("validation.error", errorDetail.get("key"));
+    assertEquals("Translated: validation.error", errorDetail.get("message"));
+    assertEquals(Map.of("field", "email"), errorDetail.get("context"));
   }
 }

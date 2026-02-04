@@ -27,11 +27,13 @@
 package io.github.linagora.linid.im.controller.handler;
 
 import io.github.linagora.linid.im.corelib.exception.ApiException;
+import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
 import io.github.linagora.linid.im.corelib.i18n.I18nService;
 import io.github.linagora.linid.im.corelib.plugin.route.DynamicRoutingService;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,12 +121,57 @@ public class FallbackRoutingController {
     body.put("errorContext", exception.getError().context());
     body.put("status", exception.getStatusCode());
     body.put("timestamp", Instant.now().toEpochMilli());
-    body.putAll(exception.getDetails());
+    body.putAll(convertDetails(exception.getDetails()));
 
     if (exception.isNeedToBeLogged()) {
       log.error(message, exception);
     }
 
     return ResponseEntity.status(exception.getStatusCode()).body(body);
+  }
+
+  /**
+   * Converts exception details to a JSON-serializable format.
+   *
+   * <p>This method handles {@link I18nMessage} objects that cannot be directly serialized by Jackson
+   * due to their non-standard getter methods. Each I18nMessage is converted to a Map containing
+   * its key, context, and translated message.
+   *
+   * @param details the original exception details map
+   * @return a new map with I18nMessage objects converted to serializable Maps
+   */
+  private Map<String, Object> convertDetails(Map<String, Object> details) {
+    Map<String, Object> result = new LinkedHashMap<>();
+
+    for (Map.Entry<String, Object> entry : details.entrySet()) {
+      Object value = entry.getValue();
+
+      if (value instanceof List<?> list) {
+        result.put(entry.getKey(), list.stream()
+            .map(this::convertI18nMessageIfNeeded)
+            .toList());
+      } else {
+        result.put(entry.getKey(), convertI18nMessageIfNeeded(value));
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * Converts an {@link I18nMessage} to a serializable Map, or returns the object unchanged.
+   *
+   * @param obj the object to potentially convert
+   * @return a Map representation of the I18nMessage, or the original object
+   */
+  private Object convertI18nMessageIfNeeded(Object obj) {
+    if (obj instanceof I18nMessage i18nMessage) {
+      Map<String, Object> messageMap = new LinkedHashMap<>();
+      messageMap.put("key", i18nMessage.key());
+      messageMap.put("message", i18nService.translate(i18nMessage));
+      messageMap.put("context", i18nMessage.context());
+      return messageMap;
+    }
+    return obj;
   }
 }
