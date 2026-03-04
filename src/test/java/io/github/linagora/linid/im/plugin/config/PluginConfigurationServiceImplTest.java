@@ -105,7 +105,7 @@ class PluginConfigurationServiceImplTest {
     provider.setName("ldapProvider");
 
     RouteConfiguration route = new RouteConfiguration();
-    route.setName("users");
+    route.setType("users");
 
     TaskConfiguration task = new TaskConfiguration();
     task.setName("syncTask");
@@ -166,7 +166,7 @@ class PluginConfigurationServiceImplTest {
     injectRootConfiguration(buildTestRootConfiguration());
     List<RouteConfiguration> routes = service.getRoutesConfiguration();
     assertEquals(1, routes.size());
-    assertEquals("users", routes.getFirst().getName());
+    assertEquals("users", routes.getFirst().getType());
   }
 
   @Test
@@ -225,14 +225,19 @@ class PluginConfigurationServiceImplTest {
     entity.setName("User");
     entity.setRoute("users");
 
+    RouteConfiguration routeConfig = new RouteConfiguration();
+    routeConfig.setType("test");
+
     RootConfiguration root = new RootConfiguration();
     root.setEntities(List.of(entity));
+    root.setRoutes(List.of(routeConfig));
     injectRootConfiguration(root);
 
     List<RouteDescription> pluginRoutes = List.of(
         new RouteDescription("GET", "/custom/plugin", "User", List.of())
     );
-    Mockito.when(mockRoutePlugin.getRoutes(root.getEntities())).thenReturn(pluginRoutes);
+    Mockito.when(mockRoutePlugin.supports("test")).thenReturn(true);
+    Mockito.when(mockRoutePlugin.getRoutes(routeConfig, root.getEntities())).thenReturn(pluginRoutes);
 
     List<RouteDescription> descriptions = service.getRouteDescriptions();
 
@@ -248,14 +253,19 @@ class PluginConfigurationServiceImplTest {
     entity.setRoute("users");
     entity.setDisabledRoutes(List.of("create", "update", "patch", "delete", "findById", "findAll", "validate"));
 
+    RouteConfiguration routeConfig = new RouteConfiguration();
+    routeConfig.setType("test");
+
     RootConfiguration root = new RootConfiguration();
     root.setEntities(List.of(entity));
+    root.setRoutes(List.of(routeConfig));
     injectRootConfiguration(root);
 
     List<RouteDescription> pluginRoutes = List.of(
         new RouteDescription("GET", "/custom/plugin", "User", List.of())
     );
-    Mockito.when(mockRoutePlugin.getRoutes(root.getEntities())).thenReturn(pluginRoutes);
+    Mockito.when(mockRoutePlugin.supports("test")).thenReturn(true);
+    Mockito.when(mockRoutePlugin.getRoutes(routeConfig, root.getEntities())).thenReturn(pluginRoutes);
 
     List<RouteDescription> descriptions = service.getRouteDescriptions();
 

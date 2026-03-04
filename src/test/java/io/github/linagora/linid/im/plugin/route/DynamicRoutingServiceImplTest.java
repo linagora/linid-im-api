@@ -33,7 +33,6 @@ import io.github.linagora.linid.im.corelib.exception.ApiException;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.EntityConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.RouteConfiguration;
-import io.github.linagora.linid.im.corelib.plugin.route.AbstractRoutePlugin;
 import io.github.linagora.linid.im.corelib.plugin.route.RouteDescription;
 import io.github.linagora.linid.im.corelib.plugin.route.RoutePlugin;
 import jakarta.servlet.http.HttpServletRequest;
@@ -69,7 +68,12 @@ class DynamicRoutingServiceImplTest {
     Mockito.when(request.getRequestURI()).thenReturn("/unknown");
     Mockito.when(request.getMethod()).thenReturn("GET");
 
+    RouteConfiguration configuration = new RouteConfiguration();
+    configuration.setType("test");
+    configuration.addOption("route", "/valid");
+
     Mockito.when(routeRegistry.getPlugins()).thenReturn(List.of(new SimpleRoutePlugin()));
+    Mockito.when(configurationService.getRoutesConfiguration()).thenReturn(List.of(configuration));
 
     ApiException exception = null;
 
@@ -86,11 +90,12 @@ class DynamicRoutingServiceImplTest {
   }
 
   @Test
-  @DisplayName("test route: should execute route with configuration")
+  @DisplayName("test route: should execute route with matching configuration")
   void testRouteWithConfiguration() {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     RouteConfiguration configuration = new RouteConfiguration();
-    configuration.setName("test");
+    configuration.setType("test");
+    configuration.addOption("route", "/valid");
 
     Mockito.when(request.getRequestURI()).thenReturn("/valid");
     Mockito.when(request.getMethod()).thenReturn("GET");
@@ -106,43 +111,93 @@ class DynamicRoutingServiceImplTest {
   }
 
   @Test
-  @DisplayName("test route: should execute route without configuration")
-  void testRouteWithoutConfiguration() {
+  @DisplayName("test route: should throw error when no plugin supports the configuration type")
+  void testRouteWithUnsupportedType() {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     RouteConfiguration configuration = new RouteConfiguration();
-    configuration.setName("none");
+    configuration.setType("unsupported-type");
 
     Mockito.when(request.getRequestURI()).thenReturn("/valid");
-    Mockito.when(request.getMethod()).thenReturn("GET");
 
     Mockito.when(routeRegistry.getPlugins()).thenReturn(List.of(new SimpleRoutePlugin()));
     Mockito.when(configurationService.getRoutesConfiguration()).thenReturn(List.of(configuration));
+
+    ApiException exception = null;
+
+    try {
+      service.route(request);
+    } catch (ApiException e) {
+      exception = e;
+    }
+
+    assertNotNull(exception);
+    assertEquals("error.router.unknown.route", exception.getError().key());
+    assertEquals(404, exception.getStatusCode());
+  }
+
+  @Test
+  @DisplayName("test route: should match correct configuration among multiple of same type")
+  void testRouteWithMultipleConfigurationsSameType() {
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+
+    RouteConfiguration config1 = new RouteConfiguration();
+    config1.setType("test");
+    config1.addOption("route", "/alpha");
+
+    RouteConfiguration config2 = new RouteConfiguration();
+    config2.setType("test");
+    config2.addOption("route", "/beta");
+
+    Mockito.when(request.getRequestURI()).thenReturn("/beta");
+    Mockito.when(request.getMethod()).thenReturn("GET");
+
+    Mockito.when(routeRegistry.getPlugins()).thenReturn(List.of(new SimpleRoutePlugin()));
+    Mockito.when(configurationService.getRoutesConfiguration()).thenReturn(List.of(config1, config2));
 
     var response = service.route(request);
 
     assertNotNull(response);
     assertEquals(200, response.getStatusCode().value());
-    assertEquals("empty", response.getBody());
+    assertEquals("test", response.getBody());
   }
 
-  public class SimpleRoutePlugin extends AbstractRoutePlugin {
+  @Test
+  @DisplayName("test route: should throw error when no route configurations exist")
+  void testRouteWithEmptyConfigurations() {
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+
+    Mockito.when(request.getRequestURI()).thenReturn("/valid");
+
+    Mockito.when(configurationService.getRoutesConfiguration()).thenReturn(List.of());
+
+    ApiException exception = null;
+
+    try {
+      service.route(request);
+    } catch (ApiException e) {
+      exception = e;
+    }
+
+    assertNotNull(exception);
+    assertEquals("error.router.unknown.route", exception.getError().key());
+    assertEquals(404, exception.getStatusCode());
+  }
+
+  public class SimpleRoutePlugin implements RoutePlugin {
     @Override
-    public List<RouteDescription> getRoutes(List<EntityConfiguration> entities) {
+    public List<RouteDescription> getRoutes(RouteConfiguration configuration, List<EntityConfiguration> entities) {
       return List.of();
     }
 
     @Override
-    public boolean match(String url, String method) {
-      return "/valid".equals(url);
+    public boolean match(RouteConfiguration configuration, String url, String method) {
+      String route = configuration.getOption("route").orElse("");
+      return url.endsWith(route) && "GET".equalsIgnoreCase(method);
     }
 
     @Override
-    public ResponseEntity<?> execute(HttpServletRequest request) {
-      String name = "empty";
-      if (getConfiguration() != null) {
-        name = getConfiguration().getName();
-      }
-      return ResponseEntity.ok(name);
+    public ResponseEntity<?> execute(RouteConfiguration configuration, HttpServletRequest request) {
+      return ResponseEntity.ok(configuration.getType());
     }
 
     @Override
