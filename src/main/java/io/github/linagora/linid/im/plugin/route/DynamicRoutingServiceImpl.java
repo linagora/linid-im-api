@@ -43,8 +43,8 @@ import org.springframework.stereotype.Service;
  * Service implementation responsible for dynamically routing HTTP requests to the appropriate {@link RoutePlugin}.
  *
  * <p>
- * This service inspects the current HTTP request, determines the matching route plugin based on the URI and method, retrieves its
- * associated configuration (if any), sets it on the plugin, and then delegates execution to the plugin.
+ * This service iterates over route configurations, finds the matching plugin by type, and delegates execution by passing the
+ * configuration as a method parameter.
  *
  * <p>
  * If no matching route plugin is found, a {@link ApiException} with a 404 status is thrown.
@@ -63,23 +63,17 @@ public class DynamicRoutingServiceImpl implements DynamicRoutingService {
 
   @Override
   public ResponseEntity<?> route(HttpServletRequest request) {
-    var routePlugin = routeRegistry.getPlugins()
+    return configurationService.getRoutesConfiguration()
         .stream()
-        .filter(route -> route.match(request.getRequestURI(), request.getMethod()))
+        .flatMap(configuration -> routeRegistry.getPlugins()
+            .stream()
+            .filter(plugin -> plugin.supports(configuration.getType()))
+            .filter(plugin -> plugin.match(configuration, request.getRequestURI(), request.getMethod()))
+            .map(plugin -> plugin.execute(configuration, request)))
         .findFirst()
         .orElseThrow(() -> new ApiException(404, I18nMessage.of(
             "error.router.unknown.route",
             Map.of("route", request.getRequestURI())
         )));
-
-    var configuration = configurationService.getRoutesConfiguration()
-        .stream()
-        .filter(routeConfiguration -> routePlugin.supports(routeConfiguration.getName()))
-        .findFirst()
-        .orElse(null);
-
-    routePlugin.setConfiguration(configuration);
-
-    return routePlugin.execute(request);
   }
 }

@@ -260,8 +260,13 @@ public class PluginConfigurationServiceImpl implements PluginConfigurationServic
       }
     });
 
-    this.routeRegistry.getPlugins().forEach(plugin -> routeDescriptions
-        .addAll(plugin.getRoutes(root.getEntities())));
+    this.root.getRoutes().forEach(configuration -> {
+      String type = configuration.getType();
+      this.routeRegistry.getPlugins().stream()
+          .filter(plugin -> plugin.supports(type))
+          .forEach(plugin -> routeDescriptions
+              .addAll(plugin.getRoutes(configuration, root.getEntities())));
+    });
 
     routeDescriptions.sort(Comparator.comparing(RouteDescription::path));
 
