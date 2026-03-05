@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-03-05
+
+### Added
+
+- handle List type for enity mapping
+
+### Fixed
+
+- enable NoHandlerFoundException for fallback routing
+- resolve plugin configuration before matching request
+
 ## [0.2.5] - 2026-02-02
 
 ### Fixed
@@ -72,6 +83,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - setup internationalization controller and service
 
 
+[0.3.0]: https://github.com/linagora/linid-im-api/compare/v0.2.6...v0.3.0
 [0.2.6]: https://github.com/linagora/linid-im-api/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/linagora/linid-im-api/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/linagora/linid-im-api/compare/v0.2.3...v0.2.4
