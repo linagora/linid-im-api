@@ -110,8 +110,8 @@ public class DynamicEntityMapperImpl implements DynamicEntityMapper {
   /**
    * Resolves the target Java class corresponding to the given type name.
    *
-   * <p>Supported types include primitive wrappers and common date/time classes. If the type is not recognized,
-   * {@link String} class is returned by default.
+   * <p>Supported types include primitive wrappers, common date/time classes, and collections. 
+   * If the type is not recognized, {@link String} class is returned by default.
    *
    * @param type the attribute type as a string (case-insensitive)
    * @return the corresponding Java Class object for the type
@@ -125,6 +125,7 @@ public class DynamicEntityMapperImpl implements DynamicEntityMapper {
       case "long" -> Long.class;
       case "timestamp" -> java.sql.Timestamp.class;
       case "date" -> java.util.Date.class;
+      case "list" -> java.util.List.class;
       default -> String.class;
     };
   }
