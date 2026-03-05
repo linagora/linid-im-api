@@ -34,6 +34,7 @@ import io.github.linagora.linid.im.corelib.plugin.config.dto.EntityConfiguration
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntity;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,6 +65,7 @@ class DynamicEntityMapperImplTest {
     assertEquals(Long.class, mapper.resolveClass("long"));
     assertEquals(java.sql.Timestamp.class, mapper.resolveClass("timestamp"));
     assertEquals(java.util.Date.class, mapper.resolveClass("date"));
+    assertEquals(java.util.List.class, mapper.resolveClass("list"));
     assertEquals(String.class, mapper.resolveClass("unknown"));
   }
 
@@ -96,32 +98,38 @@ class DynamicEntityMapperImplTest {
   void testApply() {
     Mockito.when(conversionService.convert(Mockito.any(), Mockito.eq(String.class))).thenReturn("test");
     Mockito.when(conversionService.convert(Mockito.any(), Mockito.eq(Integer.class))).thenReturn(1);
-
+    Mockito.when(conversionService.convert(Mockito.any(), Mockito.eq(List.class))).thenReturn(List.of("a", "b"));
+   
     var entity = new DynamicEntity();
     var configuration = new EntityConfiguration();
     var attributes = new ArrayList<AttributeConfiguration>();
     var attribute1 = new AttributeConfiguration();
     var attribute2 = new AttributeConfiguration();
     var attribute3 = new AttributeConfiguration();
+    var attribute4 = new AttributeConfiguration();
 
     attribute1.setName("string");
     attribute1.setType("string");
     attribute2.setName("integer");
     attribute2.setType("integer");
-    attribute3.setName("double");
-    attribute3.setType("double");
+    attribute3.setName("list");
+    attribute3.setType("list");
+    attribute4.setName("double");
+    attribute4.setType("double");
     attributes.add(attribute1);
     attributes.add(attribute2);
     attributes.add(attribute3);
+    attributes.add(attribute4);
     configuration.setAttributes(attributes);
     entity.setConfiguration(configuration);
-    entity.setAttributes(Map.of("string", "test", "integer", "1"));
+    entity.setAttributes(Map.of("string", "test", "integer", "1", "list", "a, b"));
 
     var result = mapper.apply(entity);
 
     var expected = new HashMap<String, Object>();
     expected.put("string", "test");
     expected.put("integer", 1);
+    expected.put("list", List.of("a", "b"));
     expected.put("double", null);
     assertEquals(expected, result);
   }
