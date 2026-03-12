@@ -36,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -114,7 +115,7 @@ public class GenericController {
   @GetMapping()
   public ResponseEntity<Page<Map<String, Object>>> getEntities(@PathVariable String entity,
                                        @RequestParam MultiValueMap<String, String> filters,
-                                       Pageable pageable,
+                                       @PageableDefault(size = 20) Pageable pageable,
                                        HttpServletRequest request) {
     Page<Map<String, Object>> resources = service
         .handleFindAll(request, entity, filters, pageable)
