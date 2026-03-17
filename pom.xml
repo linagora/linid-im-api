@@ -75,7 +75,6 @@
       <groupId>io.github.linagora.linid.im</groupId>
       <artifactId>linid-im-api-corelib</artifactId>
       <version>0.12.3</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
