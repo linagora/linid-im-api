@@ -284,8 +284,13 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
    */
   public URLClassLoader createClassLoader(File jarFile) {
     try {
-      URL[] urls = new URL[] {jarFile.toURI().toURL()};
-      return new URLClassLoader(urls, this.getClass().getClassLoader());
+      ClassLoader parent = Thread.currentThread().getContextClassLoader();
+
+      return new ChildFirstClassLoader(
+        new URL[]{jarFile.toURI().toURL()},
+        parent
+      );
+
     } catch (MalformedURLException e) {
       log.error("Failed to create class loader for plugin jar: {}", jarFile.getName(), e);
       return null;
@@ -365,6 +370,7 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
           .map(className -> className.substring(0, className.length() - ".class".length()))
           .map(className -> {
             try {
+              System.out.println(jarFile.getName());
               return Class.forName(className, false, loader);
             } catch (ClassNotFoundException e) {
               log.debug("Class not found: {}", className);
