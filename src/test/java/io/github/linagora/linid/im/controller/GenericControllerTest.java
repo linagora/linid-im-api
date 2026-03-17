@@ -33,6 +33,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 
+import io.github.linagora.linid.im.controller.model.PaginationRequest;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntity;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntityMapper;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntityService;
@@ -101,7 +102,7 @@ class GenericControllerTest {
     ResponseEntity<?> response = controller.getEntities(
         "testEntity",
         MultiValueMap.fromMultiValue(Map.of()),
-        Page.empty().getPageable(),
+        new PaginationRequest(),
         request
     );
 
