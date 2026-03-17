@@ -26,16 +26,17 @@
 
 package io.github.linagora.linid.im.controller;
 
+import io.github.linagora.linid.im.controller.model.PaginationRequest;
 import io.github.linagora.linid.im.corelib.exception.ApiException;
 import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntityMapper;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntityService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -75,7 +76,7 @@ public class GenericController {
    * otherwise 200 (OK).
    *
    * @param resources the page of resources to check
-   * @param <T> the type of resource contained in the page
+   * @param <T>       the type of resource contained in the page
    * @return the HTTP status code to use for the response
    */
   public <T> int getStatus(final Page<T> resources) {
@@ -90,34 +91,34 @@ public class GenericController {
    * Creates a new entity instance.
    *
    * @param entity the name of the entity type to create
-   * @param body a map of attribute names and values for the new entity
+   * @param body   a map of attribute names and values for the new entity
    * @return a ResponseEntity containing the created entity and HTTP 201 status
    */
   @PostMapping
   public ResponseEntity<Map<String, Object>> createEntity(@PathVariable String entity,
-                                        @RequestBody Map<String, Object> body,
-                                        HttpServletRequest request) {
+                                                          @RequestBody Map<String, Object> body,
+                                                          HttpServletRequest request) {
     var dynamicEntity = service.handleCreate(request, entity, body);
 
     return ResponseEntity.status(HttpStatus.CREATED)
-        .body(mapper.apply(dynamicEntity));
+      .body(mapper.apply(dynamicEntity));
   }
 
   /**
    * Retrieves a paginated list of entities filtered by optional criteria.
    *
-   * @param entity the name of the entity type to retrieve
-   * @param filters a map of filters to apply to the query
-   * @param pageable pagination information including page number and size
+   * @param entity   the name of the entity type to retrieve
+   * @param filters  a map of filters to apply to the query
+   * @param paginationRequest pagination information including page number and size
    * @return a ResponseEntity containing the page of entities and HTTP status 200 or 206
    */
   @GetMapping()
   public ResponseEntity<Page<Map<String, Object>>> getEntities(@PathVariable String entity,
-                                       @RequestParam MultiValueMap<String, String> filters,
-                                       Pageable pageable,
-                                       HttpServletRequest request) {
+                                                               @RequestParam MultiValueMap<String, String> filters,
+                                                               @Valid PaginationRequest paginationRequest,
+                                                               HttpServletRequest request) {
     Page<Map<String, Object>> resources = service
-        .handleFindAll(request, entity, filters, pageable)
+        .handleFindAll(request, entity, filters, paginationRequest.toPageable())
         .map(mapper);
 
     return ResponseEntity.status(this.getStatus(resources))
@@ -128,12 +129,12 @@ public class GenericController {
    * Retrieves a single entity by its ID.
    *
    * @param entity the name of the entity type to retrieve
-   * @param id the ID of the entity to retrieve
+   * @param id     the ID of the entity to retrieve
    * @return a ResponseEntity containing the entity and HTTP status 200
    */
   @GetMapping("/{id}")
   public ResponseEntity<Map<String, Object>> getEntityById(@PathVariable String entity, @PathVariable String id,
-                                         HttpServletRequest request) {
+                                                           HttpServletRequest request) {
     var dynamicEntity = service.handleFindById(request, entity, id);
     return ResponseEntity.ok(mapper.apply(dynamicEntity));
   }
@@ -142,14 +143,14 @@ public class GenericController {
    * Updates an existing entity by replacing it completely.
    *
    * @param entity the name of the entity type to update
-   * @param id the ID of the entity to update
-   * @param body a map of attribute names and values for the updated entity
+   * @param id     the ID of the entity to update
+   * @param body   a map of attribute names and values for the updated entity
    * @return a ResponseEntity containing the updated entity and HTTP status 200
    */
   @PutMapping("/{id}")
   public ResponseEntity<Map<String, Object>> putEntity(@PathVariable String entity, @PathVariable String id,
-                                     @RequestBody Map<String, Object> body,
-                                     HttpServletRequest request) {
+                                                       @RequestBody Map<String, Object> body,
+                                                       HttpServletRequest request) {
     var dynamicEntity = service.handleUpdate(request, entity, id, body);
     return ResponseEntity.ok(mapper.apply(dynamicEntity));
   }
@@ -158,15 +159,15 @@ public class GenericController {
    * Partially updates an existing entity.
    *
    * @param entity the name of the entity type to patch
-   * @param id the ID of the entity to patch
-   * @param body a map of attribute names and values to patch in the entity
+   * @param id     the ID of the entity to patch
+   * @param body   a map of attribute names and values to patch in the entity
    * @return a ResponseEntity containing the patched entity and HTTP status 200
    */
   @PatchMapping("/{id}")
   public ResponseEntity<Map<String, Object>> patchEntity(@PathVariable String entity,
-                                       @PathVariable String id,
-                                       @RequestBody Map<String, Object> body,
-                                       HttpServletRequest request) {
+                                                         @PathVariable String id,
+                                                         @RequestBody Map<String, Object> body,
+                                                         HttpServletRequest request) {
     var dynamicEntity = service.handlePatch(request, entity, id, body);
     return ResponseEntity.ok(mapper.apply(dynamicEntity));
   }
@@ -175,16 +176,16 @@ public class GenericController {
    * Deletes an entity by its ID.
    *
    * @param entity the name of the entity type to delete
-   * @param id the ID of the entity to delete
+   * @param id     the ID of the entity to delete
    * @return a ResponseEntity with HTTP status 204 (No Content)
    */
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> deleteEntity(@PathVariable String entity, @PathVariable String id,
-                                        HttpServletRequest request) {
+                                           HttpServletRequest request) {
     if (!service.handleDelete(request, entity, id)) {
       throw new ApiException(404, I18nMessage.of(
-          "error.router.unknown.route",
-          Map.of("route", request.getRequestURI())
+        "error.router.unknown.route",
+        Map.of("route", request.getRequestURI())
       ));
     }
 
@@ -195,21 +196,21 @@ public class GenericController {
    * Validates a single attribute value for a dynamic entity.
    *
    * <p>
-   * This endpoint performs validation only (no side-effects). When validation succeeds, HTTP 204 (No Content) is returned.
+   * This endpoint performs validation only (no side-effects). When validation succeeds, HTTP 204 (No Content) is
+   * returned.
    *
-   * @param entityRoute entity route (as used in configuration)
+   * @param entityRoute   entity route (as used in configuration)
    * @param attributeName attribute name to validate
-   * @param value request body value to validate; may be omitted, in which case the value is treated as {@code null} for
-   *     validation purposes
-   * @param request HTTP request
+   * @param value         request body value to validate; may be omitted, in which case the value is treated as
+   *                      {@code null} for validation purposes
+   * @param request       HTTP request
    * @return 204 No Content on success; 404 if entity or attribute not found; 400 if validation fails
    */
   @PostMapping("/validate/{attributeName}")
-  public ResponseEntity<Void> validateAttribute(
-      @PathVariable("entity") String entityRoute,
-      @PathVariable("attributeName") String attributeName,
-      @RequestBody(required = false) Object value,
-      HttpServletRequest request) {
+  public ResponseEntity<Void> validateAttribute(@PathVariable("entity") String entityRoute,
+                                                @PathVariable("attributeName") String attributeName,
+                                                @RequestBody(required = false) Object value,
+                                                HttpServletRequest request) {
     service.validateAttribute(entityRoute, attributeName, value);
     return ResponseEntity.noContent().build();
   }
