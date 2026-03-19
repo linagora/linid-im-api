@@ -24,14 +24,16 @@
  * LinID Identity Manager software.
  */
 
-package io.github.linagora.linid.im.plugin.authorization;
+package io.github.linagora.linid.im.plugin.authentication;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationPlugin;
-import io.github.linagora.linid.im.corelib.plugin.authorization.DenyAllAuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.DenyAllAuthenticationPlugin;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
-import io.github.linagora.linid.im.corelib.plugin.config.dto.AuthorizationConfiguration;
+import io.github.linagora.linid.im.corelib.plugin.config.dto.AuthenticationConfiguration;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,35 +45,53 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.plugin.core.PluginRegistry;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Test class: AuthorizationFactoryImpl")
-class AuthorizationFactoryImplTest {
+@DisplayName("Test class: AuthenticationFactoryImpl")
+class AuthenticationFactoryImplTest {
   @Mock
-  private PluginRegistry<AuthorizationPlugin, String> pluginRegistry;
+  private PluginRegistry<AuthenticationPlugin, String> pluginRegistry;
   @Mock
   private PluginConfigurationService pluginConfigurationService;
 
   @InjectMocks
-  private AuthorizationFactoryImpl authorizationFactory;
+  private AuthenticationFactoryImpl authenticationFactory;
 
   @Test
-  @DisplayName("test getAuthorizationPlugin: should return deny-all without configuration")
-  void testGetAuthorizationPluginWithoutConfiguration() {
-    Mockito.when(pluginConfigurationService.getAuthorizationConfiguration()).thenReturn(Optional.empty());
+  @DisplayName("test getAuthenticationPlugin: should return deny-all without configuration")
+  void testGetAuthenticationPluginWithoutConfiguration() {
+    Mockito.when(pluginConfigurationService.getAuthenticationConfiguration()).thenReturn(Optional.empty());
 
-    var plugin = authorizationFactory.getAuthorizationPlugin();
-    assertInstanceOf(DenyAllAuthorizationPlugin.class, plugin);
+    var plugin = authenticationFactory.getAuthenticationPlugin();
+    assertInstanceOf(DenyAllAuthenticationPlugin.class, plugin);
   }
 
   @Test
-  @DisplayName("test getAuthorizationPlugin: should return deny-all without plugin")
-  void testGetAuthorizationPluginWithoutPlugin() {
-    Mockito.when(pluginConfigurationService.getAuthorizationConfiguration())
-        .thenReturn(Optional.of(new AuthorizationConfiguration()));
-    Mockito.when(pluginRegistry.getPluginOrDefaultFor(Mockito.any(), Mockito.any(AuthorizationPlugin.class)))
-        .thenReturn(new DenyAllAuthorizationPlugin());
+  @DisplayName("test getAuthenticationPlugin: should return deny-all without plugin")
+  void testGetAuthenticationPluginWithoutPlugin() {
+    Mockito.when(pluginConfigurationService.getAuthenticationConfiguration())
+        .thenReturn(Optional.of(new AuthenticationConfiguration()));
+    Mockito.when(pluginRegistry.getPluginOrDefaultFor(Mockito.any(), Mockito.any(AuthenticationPlugin.class)))
+        .thenReturn(new DenyAllAuthenticationPlugin());
 
-    var plugin = authorizationFactory.getAuthorizationPlugin();
-    assertInstanceOf(DenyAllAuthorizationPlugin.class, plugin);
+    var plugin = authenticationFactory.getAuthenticationPlugin();
+    assertInstanceOf(DenyAllAuthenticationPlugin.class, plugin);
   }
 
+  @Test
+  @DisplayName("test getAuthenticationConfiguration: should return null without configuration")
+  void testGetAuthenticationConfigurationWithoutConfiguration() {
+    Mockito.when(pluginConfigurationService.getAuthenticationConfiguration()).thenReturn(Optional.empty());
+
+    var config = authenticationFactory.getAuthenticationConfiguration();
+    assertNull(config);
+  }
+
+  @Test
+  @DisplayName("test getAuthenticationConfiguration: should return configuration when present")
+  void testGetAuthenticationConfigurationWithConfiguration() {
+    var expected = new AuthenticationConfiguration();
+    Mockito.when(pluginConfigurationService.getAuthenticationConfiguration()).thenReturn(Optional.of(expected));
+
+    var config = authenticationFactory.getAuthenticationConfiguration();
+    assertEquals(expected, config);
+  }
 }

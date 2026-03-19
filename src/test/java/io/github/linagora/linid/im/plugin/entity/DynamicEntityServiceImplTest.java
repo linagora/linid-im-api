@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.github.linagora.linid.im.corelib.exception.ApiException;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AllowAllAuthorizationPlugin;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AllowAllAuthenticationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationFactory;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.EntityConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.ProviderConfiguration;
@@ -66,7 +66,7 @@ class DynamicEntityServiceImplTest {
   @Mock
   private TaskEngine taskEngine;
   @Mock
-  private AuthorizationFactory factory;
+  private AuthenticationFactory factory;
 
   @InjectMocks
   private DynamicEntityServiceImpl service;
@@ -80,9 +80,9 @@ class DynamicEntityServiceImplTest {
     providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
-    var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
+    var authPlugin = Mockito.mock(AllowAllAuthenticationPlugin.class);
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(authPlugin);
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(authPlugin);
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
@@ -93,25 +93,22 @@ class DynamicEntityServiceImplTest {
 
     service.handleCreate(request, "test", Map.of());
 
-    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
-    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.eq("CREATE"), Mockito.any());
+    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeCreate"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).create(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
 
     List<String> phasesCalled = phaseCaptor.getAllValues();
 
     assertEquals("beforeTokenValidationCreate", phasesCalled.get(0));
     assertEquals("afterTokenValidationCreate", phasesCalled.get(1));
-    assertEquals("beforePermissionValidationCreate", phasesCalled.get(2));
-    assertEquals("afterPermissionValidationCreate", phasesCalled.get(3));
-    assertEquals("beforeValidationCreate", phasesCalled.get(4));
-    assertEquals("afterValidationCreate", phasesCalled.get(5));
-    assertEquals("beforeCreate", phasesCalled.get(6));
-    assertEquals("afterCreate", phasesCalled.get(7));
+    assertEquals("beforeValidationCreate", phasesCalled.get(2));
+    assertEquals("afterValidationCreate", phasesCalled.get(3));
+    assertEquals("beforeCreate", phasesCalled.get(4));
+    assertEquals("afterCreate", phasesCalled.get(5));
   }
 
   @Test
@@ -123,9 +120,9 @@ class DynamicEntityServiceImplTest {
     providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
-    var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
+    var authPlugin = Mockito.mock(AllowAllAuthenticationPlugin.class);
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(authPlugin);
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(authPlugin);
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
@@ -136,27 +133,22 @@ class DynamicEntityServiceImplTest {
 
     service.handleUpdate(request, "test", "id", Map.of());
 
-    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
-    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
-            "UPDATE"),
-        Mockito.any());
+    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeUpdate"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).update(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
 
     List<String> phasesCalled = phaseCaptor.getAllValues();
 
     assertEquals("beforeTokenValidationUpdate", phasesCalled.get(0));
     assertEquals("afterTokenValidationUpdate", phasesCalled.get(1));
-    assertEquals("beforePermissionValidationUpdate", phasesCalled.get(2));
-    assertEquals("afterPermissionValidationUpdate", phasesCalled.get(3));
-    assertEquals("beforeValidationUpdate", phasesCalled.get(4));
-    assertEquals("afterValidationUpdate", phasesCalled.get(5));
-    assertEquals("beforeUpdate", phasesCalled.get(6));
-    assertEquals("afterUpdate", phasesCalled.get(7));
+    assertEquals("beforeValidationUpdate", phasesCalled.get(2));
+    assertEquals("afterValidationUpdate", phasesCalled.get(3));
+    assertEquals("beforeUpdate", phasesCalled.get(4));
+    assertEquals("afterUpdate", phasesCalled.get(5));
   }
 
   @Test
@@ -168,9 +160,9 @@ class DynamicEntityServiceImplTest {
     providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
-    var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
+    var authPlugin = Mockito.mock(AllowAllAuthenticationPlugin.class);
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(authPlugin);
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(authPlugin);
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
@@ -181,27 +173,22 @@ class DynamicEntityServiceImplTest {
 
     service.handlePatch(request, "test", "id", Map.of());
 
-    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
-    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
-            "UPDATE"),
-        Mockito.any());
+    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforePatch"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).patch(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
 
     List<String> phasesCalled = phaseCaptor.getAllValues();
 
     assertEquals("beforeTokenValidationPatch", phasesCalled.get(0));
     assertEquals("afterTokenValidationPatch", phasesCalled.get(1));
-    assertEquals("beforePermissionValidationPatch", phasesCalled.get(2));
-    assertEquals("afterPermissionValidationPatch", phasesCalled.get(3));
-    assertEquals("beforeValidationPatch", phasesCalled.get(4));
-    assertEquals("afterValidationPatch", phasesCalled.get(5));
-    assertEquals("beforePatch", phasesCalled.get(6));
-    assertEquals("afterPatch", phasesCalled.get(7));
+    assertEquals("beforeValidationPatch", phasesCalled.get(2));
+    assertEquals("afterValidationPatch", phasesCalled.get(3));
+    assertEquals("beforePatch", phasesCalled.get(4));
+    assertEquals("afterPatch", phasesCalled.get(5));
   }
 
   @Test
@@ -213,9 +200,9 @@ class DynamicEntityServiceImplTest {
     providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
-    var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
+    var authPlugin = Mockito.mock(AllowAllAuthenticationPlugin.class);
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(authPlugin);
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(authPlugin);
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
@@ -226,27 +213,22 @@ class DynamicEntityServiceImplTest {
 
     service.handleDelete(request, "test", "id");
 
-    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
-    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
-            "DELETE"),
-        Mockito.any());
+    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeDelete"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).delete(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
 
     List<String> phasesCalled = phaseCaptor.getAllValues();
 
     assertEquals("beforeTokenValidationDelete", phasesCalled.get(0));
     assertEquals("afterTokenValidationDelete", phasesCalled.get(1));
-    assertEquals("beforePermissionValidationDelete", phasesCalled.get(2));
-    assertEquals("afterPermissionValidationDelete", phasesCalled.get(3));
-    assertEquals("beforeValidationDelete", phasesCalled.get(4));
-    assertEquals("afterValidationDelete", phasesCalled.get(5));
-    assertEquals("beforeDelete", phasesCalled.get(6));
-    assertEquals("afterDelete", phasesCalled.get(7));
+    assertEquals("beforeValidationDelete", phasesCalled.get(2));
+    assertEquals("afterValidationDelete", phasesCalled.get(3));
+    assertEquals("beforeDelete", phasesCalled.get(4));
+    assertEquals("afterDelete", phasesCalled.get(5));
   }
 
   @Test
@@ -258,9 +240,9 @@ class DynamicEntityServiceImplTest {
     providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
-    var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
+    var authPlugin = Mockito.mock(AllowAllAuthenticationPlugin.class);
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(authPlugin);
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(authPlugin);
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
@@ -271,27 +253,22 @@ class DynamicEntityServiceImplTest {
 
     service.handleFindById(request, "test", "id");
 
-    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
-    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
-            "READ"),
-        Mockito.any());
+    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindById"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).findById(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
 
     List<String> phasesCalled = phaseCaptor.getAllValues();
 
     assertEquals("beforeTokenValidationFindById", phasesCalled.get(0));
     assertEquals("afterTokenValidationFindById", phasesCalled.get(1));
-    assertEquals("beforePermissionValidationFindById", phasesCalled.get(2));
-    assertEquals("afterPermissionValidationFindById", phasesCalled.get(3));
-    assertEquals("beforeValidationFindById", phasesCalled.get(4));
-    assertEquals("afterValidationFindById", phasesCalled.get(5));
-    assertEquals("beforeFindById", phasesCalled.get(6));
-    assertEquals("afterFindById", phasesCalled.get(7));
+    assertEquals("beforeValidationFindById", phasesCalled.get(2));
+    assertEquals("afterValidationFindById", phasesCalled.get(3));
+    assertEquals("beforeFindById", phasesCalled.get(4));
+    assertEquals("afterFindById", phasesCalled.get(5));
   }
 
   @Test
@@ -303,9 +280,9 @@ class DynamicEntityServiceImplTest {
     providerConfiguration.setType("test-type");
     var provider = Mockito.mock(ProviderPlugin.class);
     var request = Mockito.mock(HttpServletRequest.class);
-    var authPlugin = Mockito.mock(AllowAllAuthorizationPlugin.class);
+    var authPlugin = Mockito.mock(AllowAllAuthenticationPlugin.class);
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(authPlugin);
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(authPlugin);
     Mockito.when(configurationService.getEntityConfiguration(Mockito.anyString())).thenReturn(Optional.of(entityConfiguration));
     Mockito.when(configurationService.getProviderConfiguration(Mockito.any()))
         .thenReturn(Optional.of(providerConfiguration));
@@ -316,30 +293,22 @@ class DynamicEntityServiceImplTest {
 
     service.handleFindAll(request, "test", MultiValueMap.fromMultiValue(Map.of()), null);
 
-    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
-    Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(
-        Mockito.any(),
-        Mockito.any(),
-        Mockito.<MultiValueMap<String, String>>any(),
-        Mockito.eq("READ"),
-        Mockito.any());
+    Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindAll"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
+    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
 
     List<String> phasesCalled = phaseCaptor.getAllValues();
 
     assertEquals("beforeTokenValidationFindAll", phasesCalled.get(0));
     assertEquals("afterTokenValidationFindAll", phasesCalled.get(1));
-    assertEquals("beforePermissionValidationFindAll", phasesCalled.get(2));
-    assertEquals("afterPermissionValidationFindAll", phasesCalled.get(3));
-    assertEquals("beforeValidationFindAll", phasesCalled.get(4));
-    assertEquals("afterValidationFindAll", phasesCalled.get(5));
-    assertEquals("beforeFindAll", phasesCalled.get(6));
-    assertEquals("afterFindAll", phasesCalled.get(7));
+    assertEquals("beforeValidationFindAll", phasesCalled.get(2));
+    assertEquals("afterValidationFindAll", phasesCalled.get(3));
+    assertEquals("beforeFindAll", phasesCalled.get(4));
+    assertEquals("afterFindAll", phasesCalled.get(5));
   }
 
   @Test
@@ -435,7 +404,8 @@ class DynamicEntityServiceImplTest {
     service.validateAttribute("users", "email", "a@b.com");
 
     ArgumentCaptor<DynamicEntity> entityCaptor = ArgumentCaptor.forClass(DynamicEntity.class);
-    Mockito.verify(validationEngine).validateAttribute(entityCaptor.capture(), Mockito.eq("email"), Mockito.eq("a@b.com"), Mockito.any());
+    Mockito.verify(validationEngine).validateAttribute(
+        entityCaptor.capture(), Mockito.eq("email"), Mockito.eq("a@b.com"), Mockito.any());
     assertEquals(entityConfiguration, entityCaptor.getValue().getConfiguration());
   }
 

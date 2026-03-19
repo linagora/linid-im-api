@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.github.linagora.linid.im.corelib.exception.ApiException;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationPlugin;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
 import io.github.linagora.linid.im.corelib.plugin.entity.EntityDescription;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,7 +52,7 @@ import org.springframework.http.HttpStatus;
 class MetadataControllerTest {
 
   @Mock
-  private AuthorizationFactory authorizationFactory;
+  private AuthenticationFactory authenticationFactory;
 
   @Mock
   private PluginConfigurationService pluginConfigurationService;
@@ -60,12 +60,12 @@ class MetadataControllerTest {
   @InjectMocks
   private MetadataController metadataController;
 
-  private AuthorizationPlugin authorizationPlugin;
+  private AuthenticationPlugin authenticationPlugin;
 
   @BeforeEach
   void setUp() {
-    authorizationPlugin = Mockito.mock(AuthorizationPlugin.class);
-    Mockito.when(authorizationFactory.getAuthorizationPlugin()).thenReturn(authorizationPlugin);
+    authenticationPlugin = Mockito.mock(AuthenticationPlugin.class);
+    Mockito.when(authenticationFactory.getAuthenticationPlugin()).thenReturn(authenticationPlugin);
   }
 
   @Test

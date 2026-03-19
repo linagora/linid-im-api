@@ -24,49 +24,55 @@
  * LinID Identity Manager software.
  */
 
-package io.github.linagora.linid.im.plugin.authorization;
+package io.github.linagora.linid.im.plugin.authentication;
 
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationPlugin;
-import io.github.linagora.linid.im.corelib.plugin.authorization.DenyAllAuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.DenyAllAuthenticationPlugin;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
+import io.github.linagora.linid.im.corelib.plugin.config.dto.AuthenticationConfiguration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.plugin.core.PluginRegistry;
 import org.springframework.stereotype.Component;
 
 /**
- * Default implementation of {@link AuthorizationFactory}.
+ * Default implementation of {@link AuthenticationFactory}.
  *
  * <p>
- * This factory retrieves the appropriate {@link AuthorizationPlugin} instance based on the authorization configuration loaded by
- * {@link PluginConfigurationService}. If no configuration is present or the plugin type is unknown, it returns a
- * {@link DenyAllAuthorizationPlugin}.
+ * This factory retrieves the appropriate {@link AuthenticationPlugin} instance based on the authentication configuration
+ * loaded by {@link PluginConfigurationService}. If no configuration is present or the plugin type is unknown, it returns
+ * a {@link DenyAllAuthenticationPlugin}.
  */
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AuthorizationFactoryImpl implements AuthorizationFactory {
+public class AuthenticationFactoryImpl implements AuthenticationFactory {
 
   /**
-   * Registry of available {@link AuthorizationPlugin} implementations, indexed by their type identifier.
+   * Registry of available {@link AuthenticationPlugin} implementations, indexed by their type identifier.
    */
-  private final PluginRegistry<AuthorizationPlugin, String> pluginRegistry;
+  private final PluginRegistry<AuthenticationPlugin, String> pluginRegistry;
 
   /**
-   * Service responsible for loading the authorization plugin configuration.
+   * Service responsible for loading the authentication plugin configuration.
    */
   private final PluginConfigurationService pluginConfigurationService;
 
   @Override
-  public AuthorizationPlugin getAuthorizationPlugin() {
-    var opt = pluginConfigurationService.getAuthorizationConfiguration();
+  public AuthenticationPlugin getAuthenticationPlugin() {
+    var opt = pluginConfigurationService.getAuthenticationConfiguration();
 
     if (opt.isEmpty()) {
-      return new DenyAllAuthorizationPlugin();
+      return new DenyAllAuthenticationPlugin();
     }
 
     var configuration = opt.get();
 
-    return pluginRegistry.getPluginOrDefaultFor(configuration.getType(), new DenyAllAuthorizationPlugin());
+    return pluginRegistry.getPluginOrDefaultFor(configuration.getType(), new DenyAllAuthenticationPlugin());
+  }
+
+  @Override
+  public AuthenticationConfiguration getAuthenticationConfiguration() {
+    return pluginConfigurationService.getAuthenticationConfiguration().orElse(null);
   }
 }

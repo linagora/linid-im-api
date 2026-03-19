@@ -28,7 +28,7 @@ package io.github.linagora.linid.im.plugin.config;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationPlugin;
 import io.github.linagora.linid.im.corelib.plugin.provider.ProviderPlugin;
 import io.github.linagora.linid.im.corelib.plugin.route.RoutePlugin;
 import io.github.linagora.linid.im.corelib.plugin.task.TaskPlugin;
@@ -101,13 +101,13 @@ class PluginRegistryConfigurationTest {
   }
 
   @Test
-  @DisplayName("Should return registry containing all loaded AuthorizationPlugin")
-  void validationRegistry_shouldContainLoadedAuthorizationPlugins() {
-    AuthorizationPlugin plugin1 = Mockito.mock(AuthorizationPlugin.class);
-    AuthorizationPlugin plugin2 = Mockito.mock(AuthorizationPlugin.class);
-    Mockito.when(pluginLoaderService.getAuthorizationPlugins()).thenReturn(List.of(plugin1, plugin2));
+  @DisplayName("Should return registry containing all loaded AuthenticationPlugin")
+  void authenticationRegistry_shouldContainLoadedAuthenticationPlugins() {
+    AuthenticationPlugin plugin1 = Mockito.mock(AuthenticationPlugin.class);
+    AuthenticationPlugin plugin2 = Mockito.mock(AuthenticationPlugin.class);
+    Mockito.when(pluginLoaderService.getAuthenticationPlugins()).thenReturn(List.of(plugin1, plugin2));
 
-    PluginRegistry<AuthorizationPlugin, String> registry = configuration.authorizationRegistry();
+    PluginRegistry<AuthenticationPlugin, String> registry = configuration.authenticationRegistry();
 
     assertEquals(List.of(plugin1, plugin2), registry.getPlugins());
   }

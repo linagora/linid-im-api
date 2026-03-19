@@ -8,7 +8,7 @@ plugins, and translations.
 The application reads settings from Spring properties, typically via environment variables or a configuration file (
 `application.properties` or `application.yaml`). Key properties:
 
-* `configuration.path=${CONFIGURATION_PATH}`
+- `configuration.path=${CONFIGURATION_PATH}`
   Path to the YAML configuration file defining entities, providers, routes, tasks, etc.
   Example:
 
@@ -22,7 +22,7 @@ The application reads settings from Spring properties, typically via environment
   export CONFIGURATION_PATH=/home/config/config.yaml
   ```
 
-* `plugin.loader.path=${PLUGIN_LOADER_PATH}`
+- `plugin.loader.path=${PLUGIN_LOADER_PATH}`
   Directory where plugin JARs are located. The service will scan this folder at startup (and possibly at runtime).
   Example:
 
@@ -36,7 +36,7 @@ The application reads settings from Spring properties, typically via environment
   export PLUGIN_LOADER_PATH=/home/plugins
   ```
 
-* `i18n.external.path=${I18N_EXTERNAL_PATH}`
+- `i18n.external.path=${I18N_EXTERNAL_PATH}`
   Directory containing external i18n JSON files (e.g., `en.json`, `fr.json`). These translations are merged according to
   the merge order.
   Example:
@@ -51,7 +51,7 @@ The application reads settings from Spring properties, typically via environment
   export I18N_EXTERNAL_PATH=/home/i18n
   ```
 
-* `i18n.merge.order=${I18N_MERGE_ORDER}`
+- `i18n.merge.order=${I18N_MERGE_ORDER}`
   Comma-separated list defining merge precedence for translations. Default: `plugin,external,internal`.
   Example:
 
@@ -64,29 +64,29 @@ The application reads settings from Spring properties, typically via environment
   ```bash
   export I18N_MERGE_ORDER="plugin,external,internal"
   ```
-* `authorization.accept.allow.all=${AUTHORIZATION_ACCEPT_ALLOW_ALL:false}`
-  Boolean flag to accept using the plugin that authorizes all requests without restrictions.
+
+- `authentication.accept.allow.all=${AUTHENTICATION_ACCEPT_ALLOW_ALL:false}`
+  Boolean flag to accept using the plugin that authenticates all requests without restrictions.
   Default: `false`
   Example:
 
   ```properties
-  authorization.accept.allow.all=true
+  authentication.accept.allow.all=true
   ```
 
   Environment variable:
 
   ```bash
-  export AUTHORIZATION_ACCEPT_ALLOW_ALL=true
+  export AUTHENTICATION_ACCEPT_ALLOW_ALL=true
   ```
 
-* `copyright.mode=${COPYRIGHT_MODE:default}`
+- `copyright.mode=${COPYRIGHT_MODE:default}`
   Defines the copyright mode. Possible values:
-
-    * `default`: applies default copyright enforcement.
-    * `custom`: applies a custom copyright message.
-    * `none`: disables copyright enforcement.
-      Default: `default`
-      Example:
+  - `default`: applies default copyright enforcement.
+  - `custom`: applies a custom copyright message.
+  - `none`: disables copyright enforcement.
+    Default: `default`
+    Example:
 
   ```properties
   copyright.mode=custom
@@ -98,7 +98,7 @@ The application reads settings from Spring properties, typically via environment
   export COPYRIGHT_MODE=custom
   ```
 
-* `copyright.custom=${COPYRIGHT_CUSTOM:Your copyright here}`
+- `copyright.custom=${COPYRIGHT_CUSTOM:Your copyright here}`
   Custom copyright message to apply when `copyright.mode=custom`.
   Example:
 
@@ -121,7 +121,7 @@ configuration.path=/home/config/config.yaml
 plugin.loader.path=/home/plugins
 i18n.external.path=/home/i18n
 i18n.merge.order=plugin,external,internal
-authorization.accept.allow.all=false
+authentication.accept.allow.all=false
 copyright.mode=default
 copyright.custom=Your copyright here
 ```
@@ -131,9 +131,9 @@ copyright.custom=Your copyright here
 The project provides different environments under the `docker` folder, each with its own `docker-compose.yml` and `.env`
 file.
 
-* `docker/dev/`
-* `docker/integration/`
-* `docker/production/`
+- `docker/dev/`
+- `docker/integration/`
+- `docker/production/`
 
 You can build and run the project using either Maven or Docker.
 
@@ -179,9 +179,9 @@ docker compose -f docker/prod/docker-compose.yml --env-file docker/prod/.env up
 
 The project defines three environments:
 
-* `dev`
-* `integration`
-* `production`
+- `dev`
+- `integration`
+- `production`
 
 All related configurations are located in the `docker/` folder.
 
