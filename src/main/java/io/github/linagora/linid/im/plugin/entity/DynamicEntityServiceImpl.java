@@ -28,7 +28,7 @@ package io.github.linagora.linid.im.plugin.entity;
 
 import io.github.linagora.linid.im.corelib.exception.ApiException;
 import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationFactory;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.ProviderConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntity;
@@ -63,7 +63,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
    * provider implementation.
    */
   private final ProviderFactory providerFactory;
-  private final AuthorizationFactory authorizationFactory;
+  private final AuthenticationFactory authenticationFactory;
 
   /**
    * Service to load plugin and entity configurations. Provides access to entity definitions and provider-specific
@@ -108,15 +108,12 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     var entity = new DynamicEntity();
     entity.setAttributes(body);
 
-    var authorizationPlugin = authorizationFactory.getAuthorizationPlugin();
+    var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
+    var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
 
     taskEngine.execute(entity, context, "beforeTokenValidationCreate");
-    authorizationPlugin.validateToken(request, context);
+    authenticationPlugin.validateToken(authenticationConfig, request, context);
     taskEngine.execute(entity, context, "afterTokenValidationCreate");
-
-    taskEngine.execute(entity, context, "beforePermissionValidationCreate");
-    authorizationPlugin.isAuthorized(request, entity, "CREATE", context);
-    taskEngine.execute(entity, context, "afterPermissionValidationCreate");
 
     updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
@@ -139,15 +136,12 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     var entity = new DynamicEntity();
     entity.setAttributes(body);
 
-    var authorizationPlugin = authorizationFactory.getAuthorizationPlugin();
+    var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
+    var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
 
     taskEngine.execute(entity, context, "beforeTokenValidationUpdate");
-    authorizationPlugin.validateToken(request, context);
+    authenticationPlugin.validateToken(authenticationConfig, request, context);
     taskEngine.execute(entity, context, "afterTokenValidationUpdate");
-
-    taskEngine.execute(entity, context, "beforePermissionValidationUpdate");
-    authorizationPlugin.isAuthorized(request, entity, id, "UPDATE", context);
-    taskEngine.execute(entity, context, "afterPermissionValidationUpdate");
 
     updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
@@ -170,15 +164,12 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     var entity = new DynamicEntity();
     entity.setAttributes(body);
 
-    var authorizationPlugin = authorizationFactory.getAuthorizationPlugin();
+    var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
+    var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
 
     taskEngine.execute(entity, context, "beforeTokenValidationPatch");
-    authorizationPlugin.validateToken(request, context);
+    authenticationPlugin.validateToken(authenticationConfig, request, context);
     taskEngine.execute(entity, context, "afterTokenValidationPatch");
-
-    taskEngine.execute(entity, context, "beforePermissionValidationPatch");
-    authorizationPlugin.isAuthorized(request, entity, id, "UPDATE", context);
-    taskEngine.execute(entity, context, "afterPermissionValidationPatch");
 
     updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
@@ -200,15 +191,12 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     TaskExecutionContext context = new TaskExecutionContext();
     var entity = new DynamicEntity();
 
-    var authorizationPlugin = authorizationFactory.getAuthorizationPlugin();
+    var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
+    var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
 
     taskEngine.execute(entity, context, "beforeTokenValidationDelete");
-    authorizationPlugin.validateToken(request, context);
+    authenticationPlugin.validateToken(authenticationConfig, request, context);
     taskEngine.execute(entity, context, "afterTokenValidationDelete");
-
-    taskEngine.execute(entity, context, "beforePermissionValidationDelete");
-    authorizationPlugin.isAuthorized(request, entity, id, "DELETE", context);
-    taskEngine.execute(entity, context, "afterPermissionValidationDelete");
 
     updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
@@ -232,15 +220,12 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
 
     var entity = new DynamicEntity();
 
-    var authorizationPlugin = authorizationFactory.getAuthorizationPlugin();
+    var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
+    var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
 
     taskEngine.execute(entity, context, "beforeTokenValidationFindById");
-    authorizationPlugin.validateToken(request, context);
+    authenticationPlugin.validateToken(authenticationConfig, request, context);
     taskEngine.execute(entity, context, "afterTokenValidationFindById");
-
-    taskEngine.execute(entity, context, "beforePermissionValidationFindById");
-    authorizationPlugin.isAuthorized(request, entity, id, "READ", context);
-    taskEngine.execute(entity, context, "afterPermissionValidationFindById");
 
     updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);
@@ -266,15 +251,12 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
 
     var entity = new DynamicEntity();
 
-    var authorizationPlugin = authorizationFactory.getAuthorizationPlugin();
+    var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
+    var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
 
     taskEngine.execute(entity, context, "beforeTokenValidationFindAll");
-    authorizationPlugin.validateToken(request, context);
+    authenticationPlugin.validateToken(authenticationConfig, request, context);
     taskEngine.execute(entity, context, "afterTokenValidationFindAll");
-
-    taskEngine.execute(entity, context, "beforePermissionValidationFindAll");
-    authorizationPlugin.isAuthorized(request, entity, filters, "READ", context);
-    taskEngine.execute(entity, context, "afterPermissionValidationFindAll");
 
     updateEntityConfiguration(entity, entityName);
     var provider = getProvider(entity);

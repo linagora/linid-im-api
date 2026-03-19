@@ -27,7 +27,7 @@
 package io.github.linagora.linid.im.controller;
 
 import io.github.linagora.linid.im.corelib.i18n.I18nService;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationFactory;
 import io.github.linagora.linid.im.corelib.plugin.task.TaskExecutionContext;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/i18n")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class I18nController {
-  private final AuthorizationFactory authorizationFactory;
+  private final AuthenticationFactory authenticationFactory;
 
   /**
    * Service providing access to internationalized messages.
@@ -64,7 +64,8 @@ public class I18nController {
    */
   @GetMapping("/languages")
   public ResponseEntity<List<String>> getLanguages(HttpServletRequest request) {
-    authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
+    authenticationFactory.getAuthenticationPlugin()
+        .validateToken(authenticationFactory.getAuthenticationConfiguration(), request, new TaskExecutionContext());
     return ResponseEntity.ok(i18nService.getLanguages());
   }
 
@@ -77,7 +78,8 @@ public class I18nController {
   @GetMapping("/{lang}.json")
   public ResponseEntity<Map<String, String>> getTranslationFile(@PathVariable("lang") String language,
                                                                 HttpServletRequest request) {
-    authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
+    authenticationFactory.getAuthenticationPlugin()
+        .validateToken(authenticationFactory.getAuthenticationConfiguration(), request, new TaskExecutionContext());
     return ResponseEntity.ok(i18nService.getTranslations(language));
   }
 }

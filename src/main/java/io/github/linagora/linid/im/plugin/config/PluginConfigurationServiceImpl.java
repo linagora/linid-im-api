@@ -29,7 +29,7 @@ package io.github.linagora.linid.im.plugin.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
-import io.github.linagora.linid.im.corelib.plugin.config.dto.AuthorizationConfiguration;
+import io.github.linagora.linid.im.corelib.plugin.config.dto.AuthenticationConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.EntityConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.ProviderConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.RootConfiguration;
@@ -310,7 +310,7 @@ public class PluginConfigurationServiceImpl implements PluginConfigurationServic
   }
 
   @Override
-  public Optional<AuthorizationConfiguration> getAuthorizationConfiguration() {
-    return Optional.ofNullable(this.root.getAuthorization());
+  public Optional<AuthenticationConfiguration> getAuthenticationConfiguration() {
+    return Optional.ofNullable(this.root.getAuthentication());
   }
 }

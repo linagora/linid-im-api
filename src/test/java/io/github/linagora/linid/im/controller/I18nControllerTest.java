@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import io.github.linagora.linid.im.corelib.i18n.I18nService;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AllowAllAuthorizationPlugin;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AllowAllAuthenticationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationFactory;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,7 @@ class I18nControllerTest {
   private I18nService service;
 
   @Mock
-  private AuthorizationFactory factory;
+  private AuthenticationFactory factory;
 
   @InjectMocks
   private I18nController controller;
@@ -62,7 +62,7 @@ class I18nControllerTest {
   void testGetLanguages() {
     var request = Mockito.mock(HttpServletRequest.class);
 
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(new AllowAllAuthenticationPlugin());
     Mockito.when(service.getLanguages()).thenReturn(List.of("en", "fr"));
 
     var response = controller.getLanguages(request);
@@ -77,7 +77,7 @@ class I18nControllerTest {
   void testGetTranslationFile() {
     var request = Mockito.mock(HttpServletRequest.class);
     
-    Mockito.when(factory.getAuthorizationPlugin()).thenReturn(new AllowAllAuthorizationPlugin());
+    Mockito.when(factory.getAuthenticationPlugin()).thenReturn(new AllowAllAuthenticationPlugin());
     Mockito.when(service.getTranslations(Mockito.any())).thenReturn(Map.of("key", "value"));
 
     var response = controller.getTranslationFile("fr", request);

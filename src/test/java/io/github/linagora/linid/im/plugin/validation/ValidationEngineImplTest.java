@@ -192,7 +192,7 @@ class ValidationEngineImplTest {
     var plugin = Mockito.spy(new DummyPlugin() {
       @Override
       public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value,
-        TaskExecutionContext context) {
+          TaskExecutionContext context) {
         return Optional.of(I18nMessage.of("error.test", Map.of("reason", "invalid")));
       }
     });
@@ -261,7 +261,8 @@ class ValidationEngineImplTest {
     var entity = Mockito.mock(DynamicEntity.class);
     Mockito.when(entity.getConfiguration()).thenReturn(entityConfig);
 
-    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "a@b.com", null));
+    ApiException ex = assertThrows(ApiException.class,
+        () -> validationEngine.validateAttribute(entity, "email", "a@b.com", null));
     assertEquals(404, ex.getStatusCode());
     assertEquals("error.attribute.unknown", ex.getError().key());
     assertEquals("users", ex.getError().context().get("entity"));
@@ -274,7 +275,7 @@ class ValidationEngineImplTest {
     var plugin = Mockito.spy(new DummyPlugin() {
       @Override
       public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value,
-        TaskExecutionContext context) {
+          TaskExecutionContext context) {
         return Optional.of(I18nMessage.of("error.test", Map.of("reason", "invalid")));
       }
     });
@@ -297,7 +298,8 @@ class ValidationEngineImplTest {
     Mockito.when(configurationService.getValidationConfiguration("val1")).thenReturn(Optional.empty());
     Mockito.when(validationRegistry.getPlugins()).thenReturn(List.of(plugin));
 
-    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "not-an-email", null));
+    ApiException ex = assertThrows(ApiException.class,
+        () -> validationEngine.validateAttribute(entity, "email", "not-an-email", null));
     assertEquals(400, ex.getStatusCode());
     assertEquals("error.entity.attributes", ex.getError().key());
     assertEquals("users", ex.getError().context().get("entity"));

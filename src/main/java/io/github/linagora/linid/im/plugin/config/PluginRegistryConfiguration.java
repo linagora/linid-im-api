@@ -26,7 +26,7 @@
 
 package io.github.linagora.linid.im.plugin.config;
 
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationPlugin;
 import io.github.linagora.linid.im.corelib.plugin.provider.ProviderPlugin;
 import io.github.linagora.linid.im.corelib.plugin.route.RoutePlugin;
 import io.github.linagora.linid.im.corelib.plugin.task.TaskPlugin;
@@ -100,12 +100,12 @@ public class PluginRegistryConfiguration {
   }
 
   /**
-   * Creates a {@link PluginRegistry} containing all loaded {@link AuthorizationPlugin} instances.
+   * Creates a {@link PluginRegistry} containing all loaded {@link AuthenticationPlugin} instances.
    *
-   * @return a plugin registry of authorization plugins keyed by their identifier
+   * @return a plugin registry of authentication plugins keyed by their identifier
    */
   @Bean
-  public PluginRegistry<AuthorizationPlugin, String> authorizationRegistry() {
-    return PluginRegistry.of(pluginLoaderService.getAuthorizationPlugins());
+  public PluginRegistry<AuthenticationPlugin, String> authenticationRegistry() {
+    return PluginRegistry.of(pluginLoaderService.getAuthenticationPlugins());
   }
 }

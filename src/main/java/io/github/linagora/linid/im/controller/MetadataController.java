@@ -28,7 +28,7 @@ package io.github.linagora.linid.im.controller;
 
 import io.github.linagora.linid.im.corelib.exception.ApiException;
 import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationFactory;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationFactory;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
 import io.github.linagora.linid.im.corelib.plugin.entity.EntityDescription;
 import io.github.linagora.linid.im.corelib.plugin.route.RouteDescription;
@@ -56,7 +56,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/metadata")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MetadataController {
-  private final AuthorizationFactory authorizationFactory;
+  private final AuthenticationFactory authenticationFactory;
 
   /**
    * Service responsible for accessing the plugin configuration metadata.
@@ -73,7 +73,8 @@ public class MetadataController {
    */
   @GetMapping("/routes")
   public ResponseEntity<List<RouteDescription>> getRouteDescriptions(HttpServletRequest request) {
-    authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
+    authenticationFactory.getAuthenticationPlugin()
+        .validateToken(authenticationFactory.getAuthenticationConfiguration(), request, new TaskExecutionContext());
     return ResponseEntity.ok(pluginConfigurationService.getRouteDescriptions());
   }
 
@@ -87,7 +88,8 @@ public class MetadataController {
    */
   @GetMapping("/entities")
   public ResponseEntity<List<EntityDescription>> getEntityDescriptions(HttpServletRequest request) {
-    authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
+    authenticationFactory.getAuthenticationPlugin()
+        .validateToken(authenticationFactory.getAuthenticationConfiguration(), request, new TaskExecutionContext());
     return ResponseEntity.ok(pluginConfigurationService.getEntityDescriptions());
   }
 
@@ -102,7 +104,8 @@ public class MetadataController {
    */
   @GetMapping("/entities/{entity}")
   public ResponseEntity<EntityDescription> getEntityDescription(@PathVariable String entity, HttpServletRequest request) {
-    authorizationFactory.getAuthorizationPlugin().validateToken(request, new TaskExecutionContext());
+    authenticationFactory.getAuthenticationPlugin()
+        .validateToken(authenticationFactory.getAuthenticationConfiguration(), request, new TaskExecutionContext());
     return ResponseEntity.ok(
         pluginConfigurationService.getEntityDescription(entity)
             .orElseThrow(() -> new ApiException(

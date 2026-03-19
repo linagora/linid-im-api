@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.github.linagora.linid.im.corelib.plugin.config.dto.AttributeConfiguration;
-import io.github.linagora.linid.im.corelib.plugin.config.dto.AuthorizationConfiguration;
+import io.github.linagora.linid.im.corelib.plugin.config.dto.AuthenticationConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.EntityConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.ProviderConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.RootConfiguration;
@@ -339,24 +339,24 @@ class PluginConfigurationServiceImplTest {
   }
 
   @Test
-  void shouldReturnAuthorizationConfigurationIfPresent() {
-    AuthorizationConfiguration authConfig = new AuthorizationConfiguration();
+  void shouldReturnAuthenticationConfigurationIfPresent() {
+    AuthenticationConfiguration authConfig = new AuthenticationConfiguration();
     authConfig.setType("mockAuth");
 
     RootConfiguration root = new RootConfiguration();
-    root.setAuthorization(authConfig);
+    root.setAuthentication(authConfig);
     injectRootConfiguration(root);
 
-    Optional<AuthorizationConfiguration> result = service.getAuthorizationConfiguration();
+    Optional<AuthenticationConfiguration> result = service.getAuthenticationConfiguration();
 
     assertTrue(result.isPresent());
     assertEquals("mockAuth", result.get().getType());
   }
 
   @Test
-  void shouldReturnEmptyIfAuthorizationConfigAbsent() {
+  void shouldReturnEmptyIfAuthenticationConfigAbsent() {
     injectRootConfiguration(new RootConfiguration());
-    Optional<AuthorizationConfiguration> result = service.getAuthorizationConfiguration();
+    Optional<AuthenticationConfiguration> result = service.getAuthenticationConfiguration();
     assertTrue(result.isEmpty());
   }
 }

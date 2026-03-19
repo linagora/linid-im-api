@@ -26,9 +26,9 @@
 
 package io.github.linagora.linid.im.plugin.config;
 
-import io.github.linagora.linid.im.corelib.plugin.authorization.AllowAllAuthorizationPlugin;
-import io.github.linagora.linid.im.corelib.plugin.authorization.AuthorizationPlugin;
-import io.github.linagora.linid.im.corelib.plugin.authorization.DenyAllAuthorizationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AllowAllAuthenticationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.AuthenticationPlugin;
+import io.github.linagora.linid.im.corelib.plugin.authentication.DenyAllAuthenticationPlugin;
 import io.github.linagora.linid.im.corelib.plugin.provider.ProviderPlugin;
 import io.github.linagora.linid.im.corelib.plugin.route.RoutePlugin;
 import io.github.linagora.linid.im.corelib.plugin.task.TaskPlugin;
@@ -135,9 +135,9 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
   private final List<ValidationPlugin> validationPlugins = new ArrayList<>();
 
   /**
-   * List of loaded authorization plugins implementing {@link AuthorizationPlugin}.
+   * List of loaded authentication plugins implementing {@link AuthenticationPlugin}.
    */
-  private final List<AuthorizationPlugin> authorizationPlugins = new ArrayList<>();
+  private final List<AuthenticationPlugin> authenticationPlugins = new ArrayList<>();
 
   /**
    * The directory path where plugin JAR files are located. Injected from configuration property {@code plugin.loader.directory}.
@@ -146,10 +146,10 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
   private String pluginDirectoryPath;
 
   /**
-   * Flag indicating whether the service should accept any authorization header. Injected from configuration property
-   * {@code authorization.accept.allow.all}.
+   * Flag indicating whether the service should accept any authentication header. Injected from configuration property
+   * {@code authentication.accept.allow.all}.
    */
-  @Value("${authorization.accept.allow.all}")
+  @Value("${authentication.accept.allow.all}")
   private boolean acceptAllowAll;
 
   /**
@@ -194,12 +194,12 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
   }
 
   /**
-   * Returns an unmodifiable list of all loaded authorization plugins.
+   * Returns an unmodifiable list of all loaded authentication plugins.
    *
-   * @return list of loaded authorization plugins
+   * @return list of loaded authentication plugins
    */
-  public List<AuthorizationPlugin> getAuthorizationPlugins() {
-    return Collections.unmodifiableList(authorizationPlugins);
+  public List<AuthenticationPlugin> getAuthenticationPlugins() {
+    return Collections.unmodifiableList(authenticationPlugins);
   }
 
   @Override
@@ -228,10 +228,10 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
 
     Stream.of(jars).forEach(this::loadAndRegisterPluginBeans);
 
-    this.authorizationPlugins.add(new DenyAllAuthorizationPlugin());
+    this.authenticationPlugins.add(new DenyAllAuthenticationPlugin());
     if (acceptAllowAll) {
-      log.warn("The 'allow-all' authorization plugin is permitted by configuration — this may allow bypassing access controls.");
-      this.authorizationPlugins.add(new AllowAllAuthorizationPlugin());
+      log.warn("The 'allow-all' authentication plugin is permitted by configuration — this may allow bypassing access controls.");
+      this.authenticationPlugins.add(new AllowAllAuthenticationPlugin());
     }
 
   }
@@ -399,7 +399,7 @@ public class PluginLoaderService implements ApplicationContextAware, CommandLine
         case RoutePlugin routePlugin -> routePlugins.add(routePlugin);
         case TaskPlugin taskPlugin -> taskPlugins.add(taskPlugin);
         case ValidationPlugin validationPlugin -> validationPlugins.add(validationPlugin);
-        case AuthorizationPlugin authorizationPlugin -> authorizationPlugins.add(authorizationPlugin);
+        case AuthenticationPlugin authenticationPlugin -> authenticationPlugins.add(authenticationPlugin);
         case null, default -> loaded = false;
       }
 
