@@ -39,6 +39,7 @@ import io.github.linagora.linid.im.corelib.plugin.config.dto.AttributeConfigurat
 import io.github.linagora.linid.im.corelib.plugin.config.dto.EntityConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.ValidationConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntity;
+import io.github.linagora.linid.im.corelib.plugin.task.TaskExecutionContext;
 import io.github.linagora.linid.im.corelib.plugin.validation.ValidationPlugin;
 import java.util.List;
 import java.util.Map;
@@ -182,7 +183,7 @@ class ValidationEngineImplTest {
     Mockito.when(configurationService.getValidationConfiguration("val1")).thenReturn(Optional.empty());
     Mockito.when(validationRegistry.getPlugins()).thenReturn(List.of(plugin));
 
-    assertDoesNotThrow(() -> validationEngine.validate(entity, "create"));
+    assertDoesNotThrow(() -> validationEngine.validate(entity, "create", null));
   }
 
   @Test
@@ -190,7 +191,8 @@ class ValidationEngineImplTest {
   void testValidateShouldThrow() {
     var plugin = Mockito.spy(new DummyPlugin() {
       @Override
-      public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value) {
+      public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value,
+        TaskExecutionContext context) {
         return Optional.of(I18nMessage.of("error.test", Map.of("reason", "invalid")));
       }
     });
@@ -215,7 +217,7 @@ class ValidationEngineImplTest {
     Mockito.when(configurationService.getValidationConfiguration("val1")).thenReturn(Optional.empty());
     Mockito.when(validationRegistry.getPlugins()).thenReturn(List.of(plugin));
 
-    var ex = assertThrows(ApiException.class, () -> validationEngine.validate(entity, "create"));
+    var ex = assertThrows(ApiException.class, () -> validationEngine.validate(entity, "create", null));
     assertEquals("error.entity.attributes", ex.getError().key());
     assertEquals("MyEntity", ex.getError().context().get("entity"));
 
@@ -246,7 +248,7 @@ class ValidationEngineImplTest {
     Mockito.when(configurationService.getValidationConfiguration("val1")).thenReturn(Optional.empty());
     Mockito.when(validationRegistry.getPlugins()).thenReturn(List.of(plugin));
 
-    assertDoesNotThrow(() -> validationEngine.validateAttribute(entity, "email", "a@b.com"));
+    assertDoesNotThrow(() -> validationEngine.validateAttribute(entity, "email", "a@b.com", null));
   }
 
   @Test
@@ -259,7 +261,7 @@ class ValidationEngineImplTest {
     var entity = Mockito.mock(DynamicEntity.class);
     Mockito.when(entity.getConfiguration()).thenReturn(entityConfig);
 
-    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "a@b.com"));
+    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "a@b.com", null));
     assertEquals(404, ex.getStatusCode());
     assertEquals("error.attribute.unknown", ex.getError().key());
     assertEquals("users", ex.getError().context().get("entity"));
@@ -271,7 +273,8 @@ class ValidationEngineImplTest {
   void testValidateAttributeShouldThrowWhenInvalid() {
     var plugin = Mockito.spy(new DummyPlugin() {
       @Override
-      public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value) {
+      public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value,
+        TaskExecutionContext context) {
         return Optional.of(I18nMessage.of("error.test", Map.of("reason", "invalid")));
       }
     });
@@ -294,7 +297,7 @@ class ValidationEngineImplTest {
     Mockito.when(configurationService.getValidationConfiguration("val1")).thenReturn(Optional.empty());
     Mockito.when(validationRegistry.getPlugins()).thenReturn(List.of(plugin));
 
-    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "not-an-email"));
+    ApiException ex = assertThrows(ApiException.class, () -> validationEngine.validateAttribute(entity, "email", "not-an-email", null));
     assertEquals(400, ex.getStatusCode());
     assertEquals("error.entity.attributes", ex.getError().key());
     assertEquals("users", ex.getError().context().get("entity"));
@@ -318,7 +321,8 @@ class ValidationEngineImplTest {
     }
 
     @Override
-    public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value) {
+    public Optional<I18nMessage> validate(ValidationConfiguration configuration, Object value,
+        TaskExecutionContext context) {
       return Optional.empty();
     }
   }

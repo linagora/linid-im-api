@@ -88,14 +88,14 @@ class DynamicEntityServiceImplTest {
         .thenReturn(Optional.of(providerConfiguration));
     Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
+    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.when(provider.create(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleCreate(request, "test", Map.of());
 
     Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any());
     Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.eq("CREATE"), Mockito.any());
-    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeCreate"));
+    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeCreate"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).create(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
@@ -131,7 +131,7 @@ class DynamicEntityServiceImplTest {
         .thenReturn(Optional.of(providerConfiguration));
     Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
+    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.when(provider.update(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleUpdate(request, "test", "id", Map.of());
@@ -140,7 +140,7 @@ class DynamicEntityServiceImplTest {
     Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
             "UPDATE"),
         Mockito.any());
-    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeUpdate"));
+    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeUpdate"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).update(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
@@ -176,7 +176,7 @@ class DynamicEntityServiceImplTest {
         .thenReturn(Optional.of(providerConfiguration));
     Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
+    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.when(provider.patch(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handlePatch(request, "test", "id", Map.of());
@@ -185,7 +185,7 @@ class DynamicEntityServiceImplTest {
     Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
             "UPDATE"),
         Mockito.any());
-    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforePatch"));
+    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforePatch"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).patch(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
@@ -221,7 +221,7 @@ class DynamicEntityServiceImplTest {
         .thenReturn(Optional.of(providerConfiguration));
     Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
+    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.when(provider.delete(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
 
     service.handleDelete(request, "test", "id");
@@ -230,7 +230,7 @@ class DynamicEntityServiceImplTest {
     Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
             "DELETE"),
         Mockito.any());
-    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeDelete"));
+    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeDelete"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).delete(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
@@ -266,7 +266,7 @@ class DynamicEntityServiceImplTest {
         .thenReturn(Optional.of(providerConfiguration));
     Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
+    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.when(provider.findById(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleFindById(request, "test", "id");
@@ -275,7 +275,7 @@ class DynamicEntityServiceImplTest {
     Mockito.verify(authPlugin, Mockito.times(1)).isAuthorized(Mockito.any(), Mockito.any(), Mockito.anyString(), Mockito.eq(
             "READ"),
         Mockito.any());
-    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindById"));
+    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindById"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).findById(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
@@ -311,7 +311,7 @@ class DynamicEntityServiceImplTest {
         .thenReturn(Optional.of(providerConfiguration));
     Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any());
+    Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.when(provider.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
 
     service.handleFindAll(request, "test", MultiValueMap.fromMultiValue(Map.of()), null);
@@ -323,7 +323,7 @@ class DynamicEntityServiceImplTest {
         Mockito.<MultiValueMap<String, String>>any(),
         Mockito.eq("READ"),
         Mockito.any());
-    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindAll"));
+    Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindAll"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(taskEngine, Mockito.times(8)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
@@ -430,12 +430,12 @@ class DynamicEntityServiceImplTest {
 
     Mockito.when(configurationService.getEntityConfiguration("users"))
         .thenReturn(Optional.of(entityConfiguration));
-    Mockito.doNothing().when(validationEngine).validateAttribute(Mockito.any(), Mockito.any(), Mockito.any());
+    Mockito.doNothing().when(validationEngine).validateAttribute(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
 
     service.validateAttribute("users", "email", "a@b.com");
 
     ArgumentCaptor<DynamicEntity> entityCaptor = ArgumentCaptor.forClass(DynamicEntity.class);
-    Mockito.verify(validationEngine).validateAttribute(entityCaptor.capture(), Mockito.eq("email"), Mockito.eq("a@b.com"));
+    Mockito.verify(validationEngine).validateAttribute(entityCaptor.capture(), Mockito.eq("email"), Mockito.eq("a@b.com"), Mockito.any());
     assertEquals(entityConfiguration, entityCaptor.getValue().getConfiguration());
   }
 
