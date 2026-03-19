@@ -31,6 +31,7 @@ import io.github.linagora.linid.im.corelib.i18n.I18nMessage;
 import io.github.linagora.linid.im.corelib.plugin.config.PluginConfigurationService;
 import io.github.linagora.linid.im.corelib.plugin.config.dto.ValidationConfiguration;
 import io.github.linagora.linid.im.corelib.plugin.entity.DynamicEntity;
+import io.github.linagora.linid.im.corelib.plugin.task.TaskExecutionContext;
 import io.github.linagora.linid.im.corelib.plugin.validation.ValidationEngine;
 import io.github.linagora.linid.im.corelib.plugin.validation.ValidationPlugin;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class ValidationEngineImpl implements ValidationEngine {
 
 
   @Override
-  public void validate(DynamicEntity dynamicEntity, String phase) {
+  public void validate(DynamicEntity dynamicEntity, String phase, TaskExecutionContext context) {
     List<I18nMessage> errors = new ArrayList<>();
 
     dynamicEntity.getConfiguration()
@@ -79,7 +80,7 @@ public class ValidationEngineImpl implements ValidationEngine {
             .map(this::mergeConfigurationWithGlobal)
             .forEach(configuration -> getValidationPlugin(configuration)
                 .validate(configuration, dynamicEntity.getAttributes()
-                    .getOrDefault(attributeConfiguration.getName(), null))
+                    .getOrDefault(attributeConfiguration.getName(), null), context)
                 .ifPresent(error -> {
                   error.context().put("entity", dynamicEntity.getConfiguration().getName());
                   error.context().put("attribute", attributeConfiguration.getName());
@@ -97,7 +98,8 @@ public class ValidationEngineImpl implements ValidationEngine {
   }
 
   @Override
-  public void validateAttribute(DynamicEntity dynamicEntity, String attributeName, Object value) {
+  public void validateAttribute(DynamicEntity dynamicEntity, String attributeName, Object value,
+      TaskExecutionContext context) {
     var attributeConfiguration = dynamicEntity.getConfiguration()
         .getAttributes()
         .stream()
@@ -117,7 +119,7 @@ public class ValidationEngineImpl implements ValidationEngine {
         .stream()
         .map(this::mergeConfigurationWithGlobal)
         .forEach(configuration -> getValidationPlugin(configuration)
-            .validate(configuration, value)
+            .validate(configuration, value, context)
             .ifPresent(error -> {
               error.context().put("entity", dynamicEntity.getConfiguration().getName());
               error.context().put("attribute", attributeName);
