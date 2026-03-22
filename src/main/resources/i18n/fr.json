@@ -4,5 +4,6 @@
   "error.attribute.unknown": "Attribut inconnu '{attribute}' pour l'entité '{entity}'",
   "error.entity.attributes": "Erreurs de validation pour l'entité: {entity}",
   "error.provider.unknown": "Provider inconnu '{provider}' pour l'entité '{entity}'",
-  "error.plugin.unknown": "Plugin inconnu: {type}"
+  "error.plugin.unknown": "Plugin inconnu: {type}",
+  "error.authentication.unauthorized": "Non autorisé"
 }
