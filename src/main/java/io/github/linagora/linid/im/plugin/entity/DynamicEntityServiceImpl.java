@@ -40,6 +40,7 @@ import io.github.linagora.linid.im.corelib.plugin.task.TaskExecutionContext;
 import io.github.linagora.linid.im.corelib.plugin.validation.ValidationEngine;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -268,7 +269,13 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
 
     taskEngine.execute(entity, context, "beforeFindAll");
     var entities = provider.findAll(context, configuration, filters, pageable, entity);
-    taskEngine.execute(entity, context, "afterFindAll");
+    IntStream.range(0, entities.getContent().size())
+        .forEach(
+            index -> {
+              var e = entities.getContent().get(index);
+              context.put("index", index);
+              taskEngine.execute(e, context, "afterFindAll");
+            });
 
     return entities;
   }
