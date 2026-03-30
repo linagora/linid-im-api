@@ -289,17 +289,20 @@ class DynamicEntityServiceImplTest {
     Mockito.when(providerFactory.getProviderByType(Mockito.anyString())).thenReturn(Optional.of(provider));
     Mockito.doNothing().when(taskEngine).execute(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.doNothing().when(validationEngine).validate(Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.when(provider.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(null);
+    var entity1 = new DynamicEntity();
+    var entity2 = new DynamicEntity();
+    var page = new org.springframework.data.domain.PageImpl<>(List.of(entity1, entity2));
+    Mockito.when(provider.findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(page);
 
     service.handleFindAll(request, "test", MultiValueMap.fromMultiValue(Map.of()), null);
 
     Mockito.verify(authPlugin, Mockito.times(1)).validateToken(Mockito.any(), Mockito.any(), Mockito.any());
     Mockito.verify(validationEngine, Mockito.times(1)).validate(Mockito.any(), Mockito.eq("beforeFindAll"), Mockito.any());
     Mockito.verify(provider, Mockito.times(1)).findAll(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any());
-    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
+    Mockito.verify(taskEngine, Mockito.times(7)).execute(Mockito.any(), Mockito.any(), Mockito.anyString());
 
     ArgumentCaptor<String> phaseCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(taskEngine, Mockito.times(6)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
+    Mockito.verify(taskEngine, Mockito.times(7)).execute(Mockito.any(), Mockito.any(), phaseCaptor.capture());
 
     List<String> phasesCalled = phaseCaptor.getAllValues();
 
@@ -309,6 +312,7 @@ class DynamicEntityServiceImplTest {
     assertEquals("afterValidationFindAll", phasesCalled.get(3));
     assertEquals("beforeFindAll", phasesCalled.get(4));
     assertEquals("afterFindAll", phasesCalled.get(5));
+    assertEquals("afterFindAll", phasesCalled.get(6));
   }
 
   @Test
