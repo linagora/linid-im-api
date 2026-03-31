@@ -39,6 +39,7 @@ import io.github.linagora.linid.im.corelib.plugin.task.TaskEngine;
 import io.github.linagora.linid.im.corelib.plugin.task.TaskExecutionContext;
 import io.github.linagora.linid.im.corelib.plugin.validation.ValidationEngine;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
@@ -191,6 +192,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
   public boolean handleDelete(HttpServletRequest request, String entityName, String id) {
     TaskExecutionContext context = new TaskExecutionContext();
     var entity = new DynamicEntity();
+    entity.setAttributes(new HashMap<>());
 
     var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
     var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
@@ -220,6 +222,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     context.put("id", id);
 
     var entity = new DynamicEntity();
+    entity.setAttributes(new HashMap<>());
 
     var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
     var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
@@ -251,6 +254,7 @@ public class DynamicEntityServiceImpl implements DynamicEntityService {
     context.put("pageable", pageable);
 
     var entity = new DynamicEntity();
+    entity.setAttributes(new HashMap<>());
 
     var authenticationPlugin = authenticationFactory.getAuthenticationPlugin();
     var authenticationConfig = authenticationFactory.getAuthenticationConfiguration();
